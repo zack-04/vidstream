@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "608293451507",
+    "project_id": "vidstream-87509",
+    "storage_bucket": "vidstream-87509.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608293451507:android:56ec363fab10e216ab6986",
+        "android_client_info": {
+          "package_name": "com.example.vidstream"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0k-FUkJdZDRoG_YVHz2XegJXvy--R0jE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
