@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vidstream/features/auth/repository/auth_service.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Column(
               children: [
                 Container(
@@ -29,11 +30,15 @@ class LoginPage extends StatelessWidget {
                   height: 60,
                   shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(
-                        color: Color.fromARGB(255, 215, 212, 212), width: 1),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 215, 212, 212),
+                      width: 1,
+                    ),
                   ),
                   color: Colors.white,
-                  onPressed: () {},
+                  onPressed: ()async {
+                    await ref.read(authServiceProvider).signInWithGoogle();
+                  },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
