@@ -1,34 +1,41 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:vidstream/features/auth/model/user_model.dart';
 
 class TopHeader extends StatelessWidget {
-  const TopHeader({super.key});
+  final UserModel userModel;
+  const TopHeader({
+    super.key,
+    required this.userModel,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         Row(
           children: [
             CircleAvatar(
               backgroundColor: Colors.grey,
               radius: 35,
+              backgroundImage: CachedNetworkImageProvider(userModel.profilePic),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Krishn',
-                  style: TextStyle(
+                  userModel.displayName,
+                  style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  '@Zack-cr7cw',
-                  style: TextStyle(
+                  userModel.userName,
+                  style: const TextStyle(
                     fontSize: 15,
                     color: Colors.grey,
                   ),
@@ -36,25 +43,25 @@ class TopHeader extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'No subscriptions',
-                      style: TextStyle(
+                      "${userModel.subscriptions.length} subscriptions",
+                      style: const TextStyle(
                         fontSize: 15,
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     ),
-                    Icon(
+                    const Icon(
                       Icons.circle,
                       size: 5,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     ),
                     Text(
-                      'No videos',
-                      style: TextStyle(
+                      "${userModel.videos} videos",
+                      style: const TextStyle(
                         fontSize: 15,
                         color: Colors.grey,
                       ),
