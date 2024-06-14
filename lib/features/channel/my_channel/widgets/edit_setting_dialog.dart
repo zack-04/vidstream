@@ -56,6 +56,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
         TextButton(
           onPressed: () {
             widget.onSave!(controller.text);
+            Navigator.pop(context);
           },
           child: const Text(
             "SAVE",
