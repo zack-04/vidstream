@@ -6,11 +6,11 @@ class ImageButton extends StatelessWidget {
   final String image;
   final bool haveColor;
   const ImageButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.image,
     required this.haveColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ImageButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Padding(
-        padding: const EdgeInsets.only(left: 4, right: 4),
+        padding: const EdgeInsets.only(left: 10, right: 10),
         child: Container(
           padding: const EdgeInsets.only(top: 7.6, bottom: 7.6),
           decoration: BoxDecoration(
