@@ -5,10 +5,10 @@ class SettingsDialog extends StatefulWidget {
   final String identifier;
   final Function(String channelName)? onSave;
   const SettingsDialog({
-    Key? key,
+    super.key,
     required this.identifier,
     this.onSave,
-  }) : super(key: key);
+  });
 
   @override
   State<SettingsDialog> createState() => _SettingsDialogState();

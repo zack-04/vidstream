@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/features/auth/pages/login_page.dart';
 import 'package:vidstream/features/auth/pages/username_page.dart';
+import 'package:vidstream/features/channel/my_channel/pages/my_channel_page.dart';
 import 'package:vidstream/firebase_options.dart';
-import 'package:vidstream/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Loader();
               }
-              return const HomePage();
+              return const MyChannelPage();
             },
           );
         },
