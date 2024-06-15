@@ -8,6 +8,7 @@ import 'package:vidstream/features/auth/pages/login_page.dart';
 import 'package:vidstream/features/auth/pages/username_page.dart';
 import 'package:vidstream/features/channel/my_channel/pages/my_channel_page.dart';
 import 'package:vidstream/features/channel/my_channel/pages/my_channel_setting.dart';
+import 'package:vidstream/features/channel/users_channel/pages/user_channel_page.dart';
 import 'package:vidstream/firebase_options.dart';
 
 void main() async {
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Loader();
               }
-              return const MyChannelSettings();
+              return const UserChannelPage();
             },
           );
         },

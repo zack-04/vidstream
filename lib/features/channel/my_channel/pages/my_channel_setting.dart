@@ -17,6 +17,11 @@ class MyChannelSettings extends ConsumerStatefulWidget {
 
 class _MyChannelSettingsState extends ConsumerState<MyChannelSettings> {
   bool isSwitched = false;
+
+  void refreshUser() {
+    return ref.refresh(currentUserProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ref.watch(currentUserProvider).when(
@@ -68,10 +73,11 @@ class _MyChannelSettingsState extends ConsumerState<MyChannelSettings> {
                             context: context,
                             builder: (context) => SettingsDialog(
                               identifier: "DisplayName",
-                              onSave: (displayName) {
-                                ref
+                              onSave: (displayName) async {
+                                await ref
                                     .watch(editSettingsProvider)
                                     .editDisplayName(displayName);
+                                refreshUser();
                               },
                             ),
                           );
@@ -86,10 +92,11 @@ class _MyChannelSettingsState extends ConsumerState<MyChannelSettings> {
                             context: context,
                             builder: (context) => SettingsDialog(
                               identifier: "UserName",
-                              onSave: (userName) {
-                                ref
+                              onSave: (userName) async {
+                                await ref
                                     .watch(editSettingsProvider)
                                     .editUserName(userName);
+                                refreshUser();
                               },
                             ),
                           );
@@ -104,23 +111,31 @@ class _MyChannelSettingsState extends ConsumerState<MyChannelSettings> {
                             context: context,
                             builder: (context) => SettingsDialog(
                               identifier: "Description",
-                              onSave: (description) {
-                                ref
+                              onSave: (description) async {
+                                await ref
                                     .watch(editSettingsProvider)
                                     .editDescription(description);
+                                refreshUser();
                               },
                             ),
                           );
                         },
                         value: currentUser.description,
                       ),
-
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 8),
+                        padding: const EdgeInsets.only(left: 16, right: 14),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text("Keep all my subscribers private"),
+                            const Text(
+                              "Keep all my subscribers private",
+                              style: TextStyle(
+                                fontSize: 17,
+                              ),
+                            ),
                             Switch(
                               value: isSwitched,
                               onChanged: (value) {

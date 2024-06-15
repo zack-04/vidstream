@@ -1,4 +1,3 @@
-
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
@@ -8,11 +7,11 @@ class SettingsItem extends StatelessWidget {
   final String value;
 
   const SettingsItem({
-    Key? key,
+    super.key,
     required this.identifier,
     required this.onPressed,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,10 @@ class SettingsItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(value),
+              Text(
+                value,
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
             ],
           ),
           GestureDetector(
