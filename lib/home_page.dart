@@ -6,6 +6,9 @@ import 'package:vidstream/cores/screens/error_page.dart';
 import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/cores/widgets/image_button.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
+import 'package:vidstream/features/contents/bottom_nav_bar.dart';
+import 'package:vidstream/features/upload/upload_bottom_sheet.dart';
+import 'package:vidstream/pages_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -73,9 +76,25 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+              Expanded(
+                child: pages[currentIndex],
+              ),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigation(
+        onPressed: (index) {
+          if (index != 2) {
+            currentIndex = index;
+            setState(() {});
+          } else {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => const CreateBottomSheet(),
+            );
+          }
+        },
       ),
     );
   }
