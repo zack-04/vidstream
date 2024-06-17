@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/cores/screens/error_page.dart';
 import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/cores/widgets/image_button.dart';
+import 'package:vidstream/features/account/account_page.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/bottom_nav_bar.dart';
 import 'package:vidstream/features/upload/upload_bottom_sheet.dart';
@@ -63,11 +64,21 @@ class _HomePageState extends State<HomePage> {
                   Consumer(
                     builder: (context, ref, child) {
                       return ref.watch(currentUserProvider).when(
-                            data: (data) => CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.grey,
-                              backgroundImage:
-                                  CachedNetworkImageProvider(data.profilePic),
+                            data: (currentUser) => GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  AccountPage(user: currentUser,),
+                                  ),
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.grey,
+                                backgroundImage:
+                                    CachedNetworkImageProvider(currentUser.profilePic),
+                              ),
                             ),
                             error: (error, stackTrace) => const ErrorPage(),
                             loading: () => const Loader(),
