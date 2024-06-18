@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class VideoModel {
   final String videoUrl;
@@ -46,7 +48,11 @@ class VideoModel {
       thumbnail: map['thumbnail'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
-      datePublished: map['datePublished'] as DateTime,
+      datePublished: map["datePublished"] is Timestamp
+          ? (map["datePublished"] as Timestamp).toDate()
+          : DateTime.fromMillisecondsSinceEpoch(
+              map["datepublished"] as int,
+            ),
       views: map['views'] as int,
       videoId: map['videoId'] as String,
       userId: map['userId'] as String,

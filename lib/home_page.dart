@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: const Color(0xffFFFFFF),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 0),
           child: Column(
             children: [
               Row(
@@ -69,15 +69,17 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>  AccountPage(user: currentUser,),
+                                    builder: (context) => AccountPage(
+                                      user: currentUser,
+                                    ),
                                   ),
                                 );
                               },
                               child: CircleAvatar(
                                 radius: 15,
                                 backgroundColor: Colors.grey,
-                                backgroundImage:
-                                    CachedNetworkImageProvider(currentUser.profilePic),
+                                backgroundImage: CachedNetworkImageProvider(
+                                    currentUser.profilePic),
                               ),
                             ),
                             error: (error, stackTrace) => const ErrorPage(),
@@ -86,6 +88,9 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 20,
               ),
               Expanded(
                 child: pages[currentIndex],

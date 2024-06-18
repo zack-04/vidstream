@@ -51,4 +51,13 @@ class UserDataService {
     UserModel userModel = UserModel.fromMap(currentUserMap.data()!);
     return userModel;
   }
+
+  Future<UserModel> fetchAnyUserData(userId) async {
+    final currentUserMap = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .get();
+    UserModel userModel = UserModel.fromMap(currentUserMap.data()!);
+    return userModel;
+  }
 }

@@ -14,11 +14,13 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  final int _selectedIndex = 0;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.grey,
       type: BottomNavigationBarType.fixed,
       items: [
         const BottomNavigationBarItem(
@@ -60,7 +62,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       ],
       currentIndex: _selectedIndex,
-      onTap: widget.onPressed,
+      onTap: (value) {
+        setState(() {
+          _selectedIndex = value;
+        });
+        widget.onPressed(value);
+      },
     );
   }
 }

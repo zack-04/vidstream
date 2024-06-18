@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vidstream/features/contents/Long_video/long_video_screen.dart';
 
 List pages = const [
-  Center(
-    child: Text("Home"),
-  ),
+  LongVideoScreen(),
   Center(
     child: Text("Shorts"),
   ),
   
-  // LongVideoScreen(),
   // ShortVideoPage(),
   Center(
     child: Text("upload"),
