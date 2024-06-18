@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
+import 'package:vidstream/features/contents/Long_video/parts/video.dart';
 import 'package:vidstream/features/upload/long_video/video_model.dart';
 
 class Post extends ConsumerWidget {
@@ -14,12 +15,16 @@ class Post extends ConsumerWidget {
     final AsyncValue<UserModel> userModel = ref.watch(
       anyDataUserProvider(video.userId),
     );
-    final user = userModel.whenData((user) => user);
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-      ),
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Video(video: video),
+          ),
+        );
+      },
       child: Column(
         children: [
           CachedNetworkImage(
@@ -38,50 +43,95 @@ class Post extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            CachedNetworkImageProvider(user.value!.profilePic),
+                      userModel.when(
+                        data: (user) {
+                          return CircleAvatar(
+                            radius: 22,
+                            backgroundColor: Colors.grey,
+                            backgroundImage:
+                                CachedNetworkImageProvider(user.profilePic),
+                          );
+                        },
+                        loading: () => const CircleAvatar(
+                          radius: 22,
+                          backgroundColor: Colors.grey,
+                        ),
+                        error: (_, __) => const CircleAvatar(
+                          radius: 22,
+                          backgroundColor: Colors.grey,
+                        ),
                       ),
                       const SizedBox(
                         width: 8,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            video.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                          Row(
+                      userModel.when(
+                        data: (user) {
+                          return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.value!.displayName,
-                                style: const TextStyle(color: Colors.blueGrey),
+                                video.title,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                video.views == 0
-                                    ? 'No views'
-                                    : '${video.views.toString()} views',
-                                style: const TextStyle(color: Colors.blueGrey),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Text(
-                                'a moment ago',
-                                style: TextStyle(color: Colors.blueGrey),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.displayName,
+                                    style:
+                                        const TextStyle(color: Colors.blueGrey),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    video.views == 0
+                                        ? 'No views'
+                                        : '${video.views.toString()} views',
+                                    style:
+                                        const TextStyle(color: Colors.blueGrey),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text(
+                                    'a moment ago',
+                                    style: TextStyle(color: Colors.blueGrey),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
+                          );
+                        },
+                        loading: () => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              video.title,
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            const CircularProgressIndicator(),
+                          ],
+                        ),
+                        error: (_, __) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              video.title,
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            const Text(
+                              'Error loading user',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
                       ),
                       const Spacer(),
                       IconButton(

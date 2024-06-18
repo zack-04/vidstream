@@ -36,7 +36,7 @@ class LoginPage extends ConsumerWidget {
                     ),
                   ),
                   color: Colors.white,
-                  onPressed: ()async {
+                  onPressed: () async {
                     await ref.read(authServiceProvider).signInWithGoogle();
                   },
                   child: Row(
@@ -44,7 +44,7 @@ class LoginPage extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/google_logo.png',
+                        'assets/images/google_logo.png',
                         width: 30,
                         height: 30,
                       ),

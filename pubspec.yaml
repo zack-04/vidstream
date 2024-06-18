@@ -46,6 +46,9 @@ dependencies:
   google_nav_bar: ^5.0.6
   image_picker: ^1.1.2
   uuid: ^4.4.0
+  video_player: ^2.8.7
+  timeago: ^3.6.1
+  flick_video_player: ^0.8.0
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +74,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/images/
     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
