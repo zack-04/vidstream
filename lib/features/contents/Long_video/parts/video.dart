@@ -15,6 +15,7 @@ import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/Long_video/parts/post.dart';
 import 'package:vidstream/features/contents/Long_video/widgets/video_extra_button.dart';
+import 'package:vidstream/features/contents/comment/comment_sheet.dart';
 import 'package:vidstream/features/upload/long_video/video_model.dart';
 
 class Video extends ConsumerStatefulWidget {
@@ -130,189 +131,181 @@ class _VideoState extends ConsumerState<Video> {
         child: ListView(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 13, top: 4),
-              child: Text(
-                widget.video.title,
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 7,
-                top: 5,
-              ),
-              child: Row(
+              padding: const EdgeInsets.only(left: 13, top: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 8,
-                      right: 4,
-                    ),
-                    child: Text(
-                      widget.video.views == 0
-                          ? "No view"
-                          : "${widget.video.views} views",
-                      style: const TextStyle(
-                        fontSize: 13.4,
-                        color: Color(0xff5F5F5F),
-                      ),
+                  Text(
+                    widget.video.title,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4, right: 8),
-                    child: Text(
-                      timeago.format(widget.video.datePublished),
-                      style: const TextStyle(
-                        fontSize: 13.4,
-                        color: Color(0xff5F5F5F),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                top: 9,
-                right: 9,
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: CachedNetworkImageProvider(
-                      user.value!.profilePic,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      right: 5,
-                    ),
-                    child: Text(
-                      user.value!.displayName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 6, left: 6),
-                    child: Text(
-                      user.value!.subscriptions.isEmpty
-                          ? "No subs"
-                          : "${user.value!.subscriptions.length} subs",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    height: 40,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: FlatButton(
-                        text: "Subscribe",
-                        onPressed: () async {
-                          // subscribe channel
-                          // await ref
-                          //     .watch(subscribeChannelProvider)
-                          //     .subscribeChannel(
-                          //       userId: user.value!.userId,
-                          //       currentUserId:
-                          //           FirebaseAuth.instance.currentUser!.uid,
-                          //       subscriptions: user.value!.subscriptions,
-                          //     );
-                        },
-                        colour: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(left: 9, top: 15, right: 9),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 6,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(25),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2),
+                        child: Text(
+                          widget.video.views == 0
+                              ? "No view"
+                              : "${widget.video.views} views",
+                          style: const TextStyle(
+                            fontSize: 13.4,
+                            color: Color(0xff5F5F5F),
+                          ),
                         ),
                       ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        timeago.format(widget.video.datePublished),
+                        style: const TextStyle(
+                          fontSize: 13.4,
+                          color: Color(0xff5F5F5F),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: CachedNetworkImageProvider(
+                          user.value!.profilePic,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 5,
+                        ),
+                        child: Text(
+                          user.value!.displayName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 6, left: 6),
+                        child: Text(
+                          user.value!.subscriptions.isEmpty
+                              ? "No subs"
+                              : "${user.value!.subscriptions.length} subs",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        height: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: FlatButton(
+                            text: "Subscribe",
+                            onPressed: () async {
+                              // subscribe channel
+                              // await ref
+                              //     .watch(subscribeChannelProvider)
+                              //     .subscribeChannel(
+                              //       userId: user.value!.userId,
+                              //       currentUserId:
+                              //           FirebaseAuth.instance.currentUser!.uid,
+                              //       subscriptions: user.value!.subscriptions,
+                              //     );
+                            },
+                            colour: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 9, top: 15, right: 9),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          GestureDetector(
-                            // onTap: likeVideo,
-                            child: Icon(
-                              Icons.thumb_up,
-                              color: widget.video.likes.contains(
-                                      FirebaseAuth.instance.currentUser!.uid)
-                                  ? Colors.blue
-                                  : Colors.black,
-                              size: 15.5,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 6,
+                            ),
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 237, 236, 236),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  // onTap: likeVideo,
+                                  child: Icon(
+                                    Icons.thumb_up,
+                                    color: widget.video.likes.contains(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                        ? Colors.blue
+                                        : Colors.black,
+                                    size: 15.5,
+                                  ),
+                                ),
+                                const SizedBox(width: 7),
+                                Text("${widget.video.likes.length}K"),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  height: 20,
+                                  child: VerticalDivider(
+                                    color: Colors.black,
+                                    thickness: 2,
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                const Icon(
+                                  Icons.thumb_down,
+                                  size: 15.5,
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 7),
-                          Text("${widget.video.likes.length}K"),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            height: 20,
-                            child: VerticalDivider(
-                              color: Colors.black,
-                              thickness: 2,
+                          const Padding(
+                            padding: EdgeInsets.only(left: 9, right: 9),
+                            child: VideoExtraButton(
+                              text: "Share",
+                              iconData: Icons.share,
                             ),
                           ),
-                          const SizedBox(width: 5),
-                          const Icon(
-                            Icons.thumb_down,
-                            size: 15.5,
+                          const VideoExtraButton(
+                            text: "Remix",
+                            iconData: Icons.analytics_outlined,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(
+                              left: 9,
+                              right: 9,
+                            ),
+                            child: VideoExtraButton(
+                              text: "Download",
+                              iconData: Icons.download,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 9, right: 9),
-                      child: VideoExtraButton(
-                        text: "Share",
-                        iconData: Icons.share,
-                      ),
-                    ),
-                    const VideoExtraButton(
-                      text: "Remix",
-                      iconData: Icons.analytics_outlined,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 9,
-                        right: 9,
-                      ),
-                      child: VideoExtraButton(
-                        text: "Download",
-                        iconData: Icons.download,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
 
@@ -322,16 +315,16 @@ class _VideoState extends ConsumerState<Video> {
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               child: GestureDetector(
                 onTap: () {
-                  // showModalBottomSheet(
-                  //   context: context,
-                  //   builder: (context) => CommentSheet(
-                  //     video: widget.video,
-                  //   ),
-                  // );
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => CommentSheet(
+                      video: widget.video,
+                    ),
+                  );
                 },
                 child: Container(
+                  height: 80,
                   padding: EdgeInsets.symmetric(
-                    vertical: 9,
                     horizontal: 12,
                   ),
                   decoration: BoxDecoration(
