@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/features/auth/pages/login_page.dart';
 import 'package:vidstream/features/auth/pages/username_page.dart';
-import 'package:vidstream/features/upload/long_video/video_details_page.dart';
 import 'package:vidstream/firebase_options.dart';
 import 'package:vidstream/home_page.dart';
 
@@ -28,6 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

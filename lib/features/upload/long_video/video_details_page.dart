@@ -33,7 +33,6 @@ class _VideoDetailsPageState extends ConsumerState<VideoDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
         title: const Text(
           'Add details',
           style: TextStyle(

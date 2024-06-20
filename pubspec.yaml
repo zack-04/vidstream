@@ -49,6 +49,8 @@ dependencies:
   video_player: ^2.8.7
   timeago: ^3.6.1
   flick_video_player: ^0.8.0
+  video_editor: ^3.0.0
+  ffmpeg_kit_flutter: ^6.0.3
 
 dev_dependencies:
   flutter_test:
