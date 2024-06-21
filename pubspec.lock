@@ -633,7 +633,7 @@ packages:
     source: hosted
     version: "1.9.0"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: c9e7d3a4cd1410877472158bee69963a4579f78b68c65a2b7d40d1a7a88bb161
@@ -829,6 +829,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.6.1"
+  timeago_flutter:
+    dependency: "direct main"
+    description:
+      name: timeago_flutter
+      sha256: "8faa66867090d37f7ccb9489bd6d083d14a588005eafa3fadf2d1c86760dbc27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.0"
   transparent_image:
     dependency: transitive
     description:

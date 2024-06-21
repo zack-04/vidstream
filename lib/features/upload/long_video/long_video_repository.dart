@@ -1,15 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vidstream/features/upload/long_video/video_model.dart';
+import 'package:vidstream/features/upload/long_video/long_video_model.dart';
 
 final longVideoProvider = Provider(
-  (ref) => VideoRepository(firestore: FirebaseFirestore.instance),
+  (ref) => LongVideoRepository(firestore: FirebaseFirestore.instance),
 );
 
-class VideoRepository {
+class LongVideoRepository {
   FirebaseFirestore firestore;
-  VideoRepository({
+  LongVideoRepository({
     required this.firestore,
   });
 
@@ -21,7 +21,7 @@ class VideoRepository {
       required String videoId,
       required DateTime datePublished,
       required String userId}) async {
-    VideoModel video = VideoModel(
+    LongVideoModel video = LongVideoModel(
         videoUrl: videoUrl,
         thumbnail: thumbnail,
         title: title,

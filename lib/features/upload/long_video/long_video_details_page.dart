@@ -7,21 +7,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vidstream/cores/methods.dart';
 import 'package:vidstream/cores/widgets/flat_button.dart';
-import 'package:vidstream/features/upload/long_video/video_repository.dart';
+import 'package:vidstream/features/upload/long_video/long_video_repository.dart';
 import 'package:vidstream/home_page.dart';
 
-class VideoDetailsPage extends ConsumerStatefulWidget {
+class LongVideoDetailsPage extends ConsumerStatefulWidget {
   final File video;
-  const VideoDetailsPage({
+  const LongVideoDetailsPage({
     super.key,
     required this.video,
   });
 
   @override
-  ConsumerState<VideoDetailsPage> createState() => _VideoDetailsPageState();
+  ConsumerState<LongVideoDetailsPage> createState() => _LongVideoDetailsPageState();
 }
 
-class _VideoDetailsPageState extends ConsumerState<VideoDetailsPage> {
+class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   String randomNumber = const Uuid().v4();

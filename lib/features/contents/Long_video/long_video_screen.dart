@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vidstream/cores/screens/error_page.dart';
 import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/features/contents/Long_video/parts/post.dart';
-import 'package:vidstream/features/upload/long_video/video_model.dart';
+import 'package:vidstream/features/upload/long_video/long_video_model.dart';
 
 class LongVideoScreen extends StatelessWidget {
   const LongVideoScreen({super.key});
@@ -21,7 +21,7 @@ class LongVideoScreen extends StatelessWidget {
           }
           final videoMap = snapshot.data!.docs;
           final videos = videoMap.map((video) {
-            return VideoModel.fromMap(video.data());
+            return LongVideoModel.fromMap(video.data());
           }).toList();
 
           return ListView.builder(

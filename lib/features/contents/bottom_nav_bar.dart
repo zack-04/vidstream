@@ -1,6 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vidstream/cores/screens/error_page.dart';
+import 'package:vidstream/cores/screens/loader.dart';
+import 'package:vidstream/features/account/account_page.dart';
+import 'package:vidstream/features/auth/provider/user_provider.dart';
 
 class BottomNavigation extends StatefulWidget {
   final Function(int index) onPressed;
@@ -40,7 +46,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.black,
+                color: Colors.grey,
                 width: 2,
               ),
             ),
@@ -56,9 +62,35 @@ class _BottomNavigationState extends State<BottomNavigation> {
           icon: FaIcon(FontAwesomeIcons.solidBell),
           label: 'Subscriptions',
         ),
-        const BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.rightFromBracket),
-          label: 'Logout',
+        BottomNavigationBarItem(
+          icon: Consumer(
+            builder: (context, ref, child) {
+              return ref.watch(currentUserProvider).when(
+                    data: (currentUser) => GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AccountPage(
+                              user: currentUser,
+                            ),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: CachedNetworkImageProvider(
+                          currentUser.profilePic,
+                        ),
+                      ),
+                    ),
+                    error: (error, stackTrace) => const ErrorPage(),
+                    loading: () => const Loader(),
+                  );
+            },
+          ),
+          label: 'You',
         ),
       ],
       currentIndex: _selectedIndex,

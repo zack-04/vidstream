@@ -16,10 +16,10 @@ import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/Long_video/parts/post.dart';
 import 'package:vidstream/features/contents/Long_video/widgets/video_extra_button.dart';
 import 'package:vidstream/features/contents/comment/comment_sheet.dart';
-import 'package:vidstream/features/upload/long_video/video_model.dart';
+import 'package:vidstream/features/upload/long_video/long_video_model.dart';
 
 class Video extends ConsumerStatefulWidget {
-  final VideoModel video;
+  final LongVideoModel video;
   const Video({
     super.key,
     required this.video,
@@ -43,17 +43,6 @@ class _VideoState extends ConsumerState<Video> {
     );
   }
 
-  // goBackward() {
-  //   flickManager!.flickControlManager!.seekBackward(
-  //     Duration(seconds: 5),
-  //   );
-  // }
-
-  // goForward() {
-  //   flickManager!.flickControlManager!.seekForward(
-  //     Duration(seconds: 5),
-  //   );
-  // }
 
   // likeVideo() async {
   //   // await ref.watch(longVideoProvider).likeVideo(
@@ -77,7 +66,6 @@ class _VideoState extends ConsumerState<Video> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        automaticallyImplyLeading: true,
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(176),
@@ -371,7 +359,7 @@ class _VideoState extends ConsumerState<Video> {
                 final videosMap = snapshot.data!.docs;
                 final videos = videosMap
                     .map(
-                      (video) => VideoModel.fromMap(video.data()),
+                      (video) => LongVideoModel.fromMap(video.data()),
                     )
                     .toList();
                 return ListView.builder(

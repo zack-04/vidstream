@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/Long_video/parts/video.dart';
-import 'package:vidstream/features/upload/long_video/video_model.dart';
+import 'package:vidstream/features/upload/long_video/long_video_model.dart';
 
 class Post extends ConsumerWidget {
-  final VideoModel video;
+  final LongVideoModel video;
   const Post({super.key, required this.video});
 
   @override

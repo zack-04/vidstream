@@ -2,9 +2,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vidstream/cores/widgets/flat_button.dart';
+import 'package:vidstream/features/upload/short_video/repository/short_video_repository.dart';
+import 'package:vidstream/home_page.dart';
 
-class ShortVideoDetailPage extends StatefulWidget {
+class ShortVideoDetailPage extends ConsumerStatefulWidget {
   final File video;
   const ShortVideoDetailPage({
     super.key,
@@ -12,10 +16,11 @@ class ShortVideoDetailPage extends StatefulWidget {
   });
 
   @override
-  State<ShortVideoDetailPage> createState() => _ShortVideoDetailPageState();
+  ConsumerState<ShortVideoDetailPage> createState() =>
+      _ShortVideoDetailPageState();
 }
 
-class _ShortVideoDetailPageState extends State<ShortVideoDetailPage> {
+class _ShortVideoDetailPageState extends ConsumerState<ShortVideoDetailPage> {
   final TextEditingController captionController = TextEditingController();
   final DateTime date = DateTime.now();
   @override
@@ -120,6 +125,25 @@ class _ShortVideoDetailPageState extends State<ShortVideoDetailPage> {
                     ],
                   )
                 ],
+              ),
+              const Spacer(),
+              FlatButton(
+                text: 'Publish',
+                onPressed: () async {
+                  await ref.watch(shortVideoProvider).addShortVideoToFireStore(
+                        caption: captionController.text,
+                        shortVideo: widget.video.path,
+                        datePublished: date,
+                      );
+                  Navigator.push(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(),
+                    ),
+                  );
+                },
+                colour: Colors.greenAccent,
               ),
             ],
           ),

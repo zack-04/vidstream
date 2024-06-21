@@ -9,10 +9,10 @@ import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/comment/comment_tile.dart';
 import 'package:vidstream/features/upload/comments/comment_model.dart';
 import 'package:vidstream/features/upload/comments/comment_repository.dart';
-import 'package:vidstream/features/upload/long_video/video_model.dart';
+import 'package:vidstream/features/upload/long_video/long_video_model.dart';
 
 class CommentSheet extends ConsumerStatefulWidget {
-  final VideoModel video;
+  final LongVideoModel video;
   const CommentSheet({
     super.key,
     required this.video,
@@ -30,30 +30,33 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
     return SafeArea(
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 20,
-            ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Comments',
                   style: TextStyle(
                     fontSize: 25,
                   ),
                 ),
-                Icon(
-                  Icons.close,
-                  size: 30,
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.close,
+                    size: 30,
+                  ),
                 )
               ],
             ),
           ),
-          const SizedBox(
+          SizedBox(
             child: Divider(
-              color: Colors.grey,
+              color: Colors.grey.shade400,
               thickness: 1.5,
             ),
           ),

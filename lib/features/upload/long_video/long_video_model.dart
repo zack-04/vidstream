@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class VideoModel {
+class LongVideoModel {
   final String videoUrl;
   final String thumbnail;
   final String title;
@@ -14,7 +14,7 @@ class VideoModel {
   final String userId;
   final List likes;
   final String type;
-  VideoModel({
+  LongVideoModel({
     required this.videoUrl,
     required this.thumbnail,
     required this.title,
@@ -42,8 +42,8 @@ class VideoModel {
     };
   }
 
-  factory VideoModel.fromMap(Map<String, dynamic> map) {
-    return VideoModel(
+  factory LongVideoModel.fromMap(Map<String, dynamic> map) {
+    return LongVideoModel(
       videoUrl: map['videoUrl'] as String,
       thumbnail: map['thumbnail'] as String,
       title: map['title'] as String,
@@ -65,6 +65,6 @@ class VideoModel {
 
   String toJson() => json.encode(toMap());
 
-  factory VideoModel.fromJson(String source) =>
-      VideoModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory LongVideoModel.fromJson(String source) =>
+      LongVideoModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
