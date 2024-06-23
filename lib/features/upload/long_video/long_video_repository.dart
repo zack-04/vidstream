@@ -20,7 +20,8 @@ class LongVideoRepository {
       required String description,
       required String videoId,
       required DateTime datePublished,
-      required String userId}) async {
+      required String userId,
+      }) async {
     LongVideoModel video = LongVideoModel(
         videoUrl: videoUrl,
         thumbnail: thumbnail,
@@ -33,5 +34,12 @@ class LongVideoRepository {
         likes: [],
         type: "video");
     await firestore.collection('videos').doc(videoId).set(video.toMap());
+  }
+
+
+  Future<void> incrementVideoCount(String userId) async {
+    await FirebaseFirestore.instance.collection('Users').doc(userId).update({
+      'videos': FieldValue.increment(1),
+    });
   }
 }

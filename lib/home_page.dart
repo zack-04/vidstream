@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:vidstream/cores/widgets/image_button.dart';
 import 'package:vidstream/features/contents/bottom_nav_bar.dart';
+import 'package:vidstream/features/search/pages/search_page.dart';
 import 'package:vidstream/features/upload/upload_bottom_sheet.dart';
 import 'package:vidstream/pages_list.dart';
 
@@ -53,7 +54,14 @@ class _HomePageState extends State<HomePage> {
                       height: 43,
                       child: ImageButton(
                         image: "search.png",
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SearchPage(),
+                            ),
+                          );
+                        },
                         haveColor: false,
                       ),
                     ),

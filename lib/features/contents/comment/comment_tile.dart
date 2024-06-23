@@ -34,7 +34,7 @@ class CommentTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        comment.userName,
+                        '@${comment.userName}',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,

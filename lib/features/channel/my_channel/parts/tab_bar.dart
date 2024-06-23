@@ -14,7 +14,7 @@ class PageTabBar extends StatelessWidget {
       indicatorSize: TabBarIndicatorSize.label,
       labelColor: Colors.black,
       unselectedLabelColor: Colors.grey,
-      indicatorColor: Colors.white,
+      indicatorColor: Colors.black,
       tabAlignment: TabAlignment.start,
       indicatorPadding: EdgeInsets.only(top: 15),
       tabs: [

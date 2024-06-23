@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +17,8 @@ class LongVideoDetailsPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<LongVideoDetailsPage> createState() => _LongVideoDetailsPageState();
+  ConsumerState<LongVideoDetailsPage> createState() =>
+      _LongVideoDetailsPageState();
 }
 
 class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
@@ -29,21 +29,22 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
   File? image;
   bool isThumbnailSelected = false;
   bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add details',
-          style: TextStyle(
-            fontSize: 25,
-            color: Color.fromARGB(255, 106, 105, 105),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Add details',
+              style: TextStyle(
+                fontSize: 25,
+                color: Color.fromARGB(255, 106, 105, 105),
+              ),
+            ),
           ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          LayoutBuilder(
+          body: LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
                 padding:
@@ -126,7 +127,50 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
               );
             },
           ),
-          Visibility(
+          bottomNavigationBar: isThumbnailSelected
+              ? Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: FlatButton(
+                    text: 'Publish',
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      String thumbnail =
+                          await putFileInStorage(image, randomNumber, "image");
+                      String videoUrl = await putFileInStorage(
+                          widget.video, randomNumber, "video");
+                      await ref.watch(longVideoProvider).uploadVideoToFirestore(
+                            videoUrl: videoUrl,
+                            thumbnail: thumbnail,
+                            title: titleController.text,
+                            description: descriptionController.text,
+                            videoId: videoId,
+                            datePublished: DateTime.now(),
+                            userId: FirebaseAuth.instance.currentUser!.uid,
+                          );
+                      await ref.watch(longVideoProvider).incrementVideoCount(
+                          FirebaseAuth.instance.currentUser!.uid);
+        
+                      setState(() {
+                        isLoading = false;
+                      });
+                      if (mounted) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      }
+                    },
+                    colour: Colors.green,
+                  ),
+                )
+              : const SizedBox(),
+        ),
+        Visibility(
             visible: isLoading,
             child: Container(
               color: Colors.black.withOpacity(0.3),
@@ -138,43 +182,7 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
               ),
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: isThumbnailSelected
-          ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: FlatButton(
-                text: 'Publish',
-                onPressed: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  String thumbnail =
-                      await putFileInStorage(image, randomNumber, "image");
-                  String videoUrl = await putFileInStorage(
-                      widget.video, randomNumber, "video");
-                  ref.watch(longVideoProvider).uploadVideoToFirestore(
-                        videoUrl: videoUrl,
-                        thumbnail: thumbnail,
-                        title: titleController.text,
-                        description: descriptionController.text,
-                        videoId: videoId,
-                        datePublished: DateTime.now(),
-                        userId: FirebaseAuth.instance.currentUser!.uid,
-                      );
-                  setState(() {
-                    isLoading = false;
-                  });
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                },
-                colour: Colors.green,
-              ),
-            )
-          : const SizedBox(),
+      ],
     );
   }
 }

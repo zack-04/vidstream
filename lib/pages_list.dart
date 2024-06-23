@@ -5,7 +5,6 @@ import 'package:vidstream/features/contents/Short_video/pages/short_video_page.d
 List pages = const [
   LongVideoScreen(),
   
-  
    ShortVideoPage(),
   Center(
     child: Text("upload"),

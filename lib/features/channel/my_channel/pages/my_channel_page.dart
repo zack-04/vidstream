@@ -13,46 +13,51 @@ class MyChannelPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(currentUserProvider).when(
-          data: (currentUser) {
-            return DefaultTabController(
-              length: 7,
-              child: Scaffold(
-                body: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TopHeader(
-                          userModel: currentUser,
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'More about this channel',
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.grey),
-                            ),
-                            Icon(Icons.arrow_right_outlined)
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        const Buttons(),
-                        const SizedBox(height: 20),
-                        const PageTabBar(),
-                        const TabPages(),
-                      ],
+    return Scaffold(
+      appBar: AppBar(),
+      body: ref.watch(currentUserProvider).when(
+            data: (currentUser) {
+              return DefaultTabController(
+                length: 7,
+                child: Scaffold(
+                  body: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TopHeader(
+                            userModel: currentUser,
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'More about this channel',
+                                style:
+                                    TextStyle(fontSize: 15, color: Colors.grey),
+                              ),
+                              Icon(Icons.arrow_right_outlined)
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          const Buttons(),
+                          const SizedBox(height: 20),
+                          const PageTabBar(),
+                          const SizedBox(height: 20),
+                          const TabPages(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-          error: (error, stackTrace) => const ErrorPage(),
-          loading: () => const Loader(),
-        );
+              );
+            },
+            error: (error, stackTrace) => const ErrorPage(),
+            loading: () => const Loader(),
+          ),
+    );
   }
 }

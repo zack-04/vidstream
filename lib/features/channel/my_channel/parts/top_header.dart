@@ -34,7 +34,7 @@ class TopHeader extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  userModel.userName,
+                  '@${userModel.userName}',
                   style: const TextStyle(
                     fontSize: 15,
                     color: Colors.grey,
@@ -43,7 +43,9 @@ class TopHeader extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "${userModel.subscriptions.length} subscriptions",
+                      userModel.subscriptions.isEmpty
+                          ? 'No subscriptions'
+                          : "${userModel.subscriptions.length} subscriptions",
                       style: const TextStyle(
                         fontSize: 15,
                         color: Colors.grey,

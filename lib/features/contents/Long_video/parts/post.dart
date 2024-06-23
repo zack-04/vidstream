@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/Long_video/parts/video.dart';
@@ -66,6 +67,7 @@ class Post extends ConsumerWidget {
                       ),
                       userModel.when(
                         data: (user) {
+                          String timeAgo = timeago.format(video.datePublished);
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -96,9 +98,10 @@ class Post extends ConsumerWidget {
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  const Text(
-                                    'a moment ago',
-                                    style: TextStyle(color: Colors.blueGrey),
+                                  Text(
+                                    timeAgo,
+                                    style:
+                                        const TextStyle(color: Colors.blueGrey),
                                   ),
                                 ],
                               ),

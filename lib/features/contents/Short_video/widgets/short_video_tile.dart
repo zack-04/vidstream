@@ -23,7 +23,6 @@ class ShortVideoTile extends ConsumerStatefulWidget {
 
 class _ShortVideoTileState extends ConsumerState<ShortVideoTile> {
   FlickManager? flickManager;
-  
   bool isPlaying = true;
 
   @override
@@ -34,11 +33,14 @@ class _ShortVideoTileState extends ConsumerState<ShortVideoTile> {
         Uri.parse(widget.shortVideoModel.shortVideo),
       ),
     );
-    flickManager!.flickVideoManager!.videoPlayerController!.addListener(_videoListener);
+    flickManager!.flickVideoManager!.videoPlayerController!
+        .addListener(_videoListener);
   }
 
-   void _videoListener() {
-    final isPlaying = flickManager!.flickVideoManager!.videoPlayerController!.value.isPlaying;
+  void _videoListener() {
+    if (!mounted) return;
+    final isPlaying =
+        flickManager!.flickVideoManager!.videoPlayerController!.value.isPlaying;
     if (isPlaying != this.isPlaying) {
       setState(() {
         this.isPlaying = isPlaying;
@@ -48,6 +50,8 @@ class _ShortVideoTileState extends ConsumerState<ShortVideoTile> {
 
   @override
   void dispose() {
+    flickManager!.flickVideoManager!.videoPlayerController!
+        .removeListener(_videoListener);
     flickManager!.dispose();
     super.dispose();
   }
@@ -125,6 +129,3 @@ class _ShortVideoTileState extends ConsumerState<ShortVideoTile> {
     );
   }
 }
-      
-    
-

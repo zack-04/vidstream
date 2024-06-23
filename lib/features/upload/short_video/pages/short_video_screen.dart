@@ -1,11 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:vidstream/cores/methods.dart';
+import 'package:vidstream/cores/screens/error_page.dart';
+import 'package:vidstream/cores/screens/loader.dart';
+import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/upload/short_video/pages/short_video_details_page.dart';
 import 'package:vidstream/features/upload/short_video/widgets/trim_slider.dart';
 
@@ -52,7 +57,9 @@ class _ShortVideoScreenState extends State<ShortVideoScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>  ShortVideoDetailPage(video: widget.shortVideo,),
+              builder: (context) => ShortVideoDetailPage(
+                video: widget.shortVideo,
+              ),
             ),
           );
         } else {
@@ -84,16 +91,33 @@ class _ShortVideoScreenState extends State<ShortVideoScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                           icon: const Icon(
                             Icons.arrow_back,
                             color: Colors.grey,
                             size: 30,
                           ),
                         ),
-                        const CircleAvatar(
-                          radius: 17,
-                          backgroundColor: Colors.grey,
+                        Consumer(
+                          builder: (context, ref, child) {
+                            return ref.watch(currentUserProvider).when(
+                                  data: (currentUser) {
+                                    return CircleAvatar(
+                                      radius: 17,
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                        currentUser.profilePic,
+                                      ),
+                                    );
+                                  },
+                                  error: (error, stackTrace) =>
+                                      const ErrorPage(),
+                                  loading: () => const Loader(),
+                                );
+                          },
                         )
                       ],
                     ),
