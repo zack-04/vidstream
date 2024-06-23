@@ -7,21 +7,22 @@ final longVideoProvider = Provider(
   (ref) => LongVideoRepository(firestore: FirebaseFirestore.instance),
 );
 
+
 class LongVideoRepository {
   FirebaseFirestore firestore;
   LongVideoRepository({
     required this.firestore,
   });
 
-  uploadVideoToFirestore(
-      {required String videoUrl,
-      required String thumbnail,
-      required String title,
-      required String description,
-      required String videoId,
-      required DateTime datePublished,
-      required String userId,
-      }) async {
+  uploadVideoToFirestore({
+    required String videoUrl,
+    required String thumbnail,
+    required String title,
+    required String description,
+    required String videoId,
+    required DateTime datePublished,
+    required String userId,
+  }) async {
     LongVideoModel video = LongVideoModel(
         videoUrl: videoUrl,
         thumbnail: thumbnail,
@@ -36,6 +37,28 @@ class LongVideoRepository {
     await firestore.collection('videos').doc(videoId).set(video.toMap());
   }
 
+  Future<void> likeVideo({
+    required List? likes,
+    required videoId,
+    required currentUserId,
+  }) async {
+    if (!likes!.contains(currentUserId)) {
+      await FirebaseFirestore.instance
+          .collection('videos')
+          .doc(videoId)
+          .update({
+        'likes': FieldValue.arrayUnion([currentUserId])
+      });
+    }
+    if (likes.contains(currentUserId)) {
+      await FirebaseFirestore.instance
+          .collection('videos')
+          .doc(videoId)
+          .update({
+        'likes': FieldValue.arrayRemove([currentUserId])
+      });
+    }
+  }
 
   Future<void> incrementVideoCount(String userId) async {
     await FirebaseFirestore.instance.collection('Users').doc(userId).update({

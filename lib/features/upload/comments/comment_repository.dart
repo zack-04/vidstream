@@ -19,6 +19,7 @@ class CommentRepository {
     required String videoId,
     required String userName,
     required String profilePic,
+    required DateTime datePublished,
   }) async {
     String commentId = const Uuid().v4();
     CommentModel comment = CommentModel(
@@ -27,6 +28,7 @@ class CommentRepository {
       commentId: commentId,
       userName: userName,
       profilePic: profilePic,
+      datePublished: datePublished,
     );
     await firestore.collection('comments').doc(commentId).set(comment.toMap());
   }

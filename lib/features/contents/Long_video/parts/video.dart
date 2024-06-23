@@ -15,8 +15,12 @@ import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/contents/Long_video/parts/post.dart';
 import 'package:vidstream/features/contents/Long_video/widgets/video_extra_button.dart';
+import 'package:vidstream/features/contents/Long_video/widgets/video_first_comment.dart';
+import 'package:vidstream/features/contents/comment/comment_provider.dart';
 import 'package:vidstream/features/contents/comment/comment_sheet.dart';
+import 'package:vidstream/features/upload/comments/comment_model.dart';
 import 'package:vidstream/features/upload/long_video/long_video_model.dart';
+import 'package:vidstream/features/upload/long_video/long_video_repository.dart';
 
 class Video extends ConsumerStatefulWidget {
   final LongVideoModel video;
@@ -43,14 +47,14 @@ class _VideoState extends ConsumerState<Video> {
     );
   }
 
+  Future<void> likeVideo() async {
+    await ref.watch(longVideoProvider).likeVideo(
+          currentUserId: FirebaseAuth.instance.currentUser!.uid,
+          likes: widget.video.likes,
+          videoId: widget.video.videoId,
+        );
+  }
 
-  // likeVideo() async {
-  //   // await ref.watch(longVideoProvider).likeVideo(
-  //   //       currentUserId: FirebaseAuth.instance.currentUser!.uid,
-  //   //       likes: widget.video.likes,
-  //   //       videoId: widget.video.videoId,
-  //   //     );
-  // }
   @override
   void dispose() {
     flickManager!.dispose();
@@ -78,38 +82,6 @@ class _VideoState extends ConsumerState<Video> {
             child: Stack(
               children: [
                 FlickVideoPlayer(flickManager: flickManager!),
-                // isShowIcons
-                //     ? Positioned(
-                //         right: 55,
-                //         top: 93,
-                //         child: GestureDetector(
-                //           onTap: goForward,
-                //           child: SizedBox(
-                //             height: 50,
-                //             child: Image.asset(
-                //               "assets/images/go ahead final.png",
-                //               color: Colors.white,
-                //             ),
-                //           ),
-                //         ),
-                //       )
-                //     : SizedBox(),
-                // isShowIcons
-                //     ? Positioned(
-                //         left: 48,
-                //         top: 94,
-                //         child: GestureDetector(
-                //           onTap: goBackward,
-                //           child: SizedBox(
-                //             height: 50,
-                //             child: Image.asset(
-                //               "assets/images/go_back_final.png",
-                //               color: Colors.white,
-                //             ),
-                //           ),
-                //         ),
-                //       )
-                //     : SizedBox(),
               ],
             ),
           ),
@@ -225,48 +197,64 @@ class _VideoState extends ConsumerState<Video> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 6,
-                            ),
-                            decoration: const BoxDecoration(
-                              color: Color.fromARGB(255, 237, 236, 236),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(25),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  // onTap: likeVideo,
-                                  child: Icon(
-                                    Icons.thumb_up,
-                                    color: widget.video.likes.contains(
-                                            FirebaseAuth
+                          StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('videos')
+                                .doc(widget.video.videoId)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Loader();
+                              }
+                              var videoData =
+                                  snapshot.data!.data() as Map<String, dynamic>;
+                              var likes =
+                                  List<String>.from(videoData['likes'] ?? []);
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 6,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Color.fromARGB(255, 237, 236, 236),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(25),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        await likeVideo();
+                                      },
+                                      child: Icon(
+                                        Icons.thumb_up,
+                                        color: likes.contains(FirebaseAuth
                                                 .instance.currentUser!.uid)
-                                        ? Colors.blue
-                                        : Colors.black,
-                                    size: 15.5,
-                                  ),
+                                            ? Colors.blue
+                                            : Colors.black,
+                                        size: 15.5,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 7),
+                                    Text("${likes.length}"),
+                                    const SizedBox(width: 10),
+                                    SizedBox(
+                                      height: 20,
+                                      child: VerticalDivider(
+                                        color: Colors.black,
+                                        thickness: 2,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Icon(
+                                      Icons.thumb_down,
+                                      size: 15.5,
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 7),
-                                Text("${widget.video.likes.length}K"),
-                                const SizedBox(width: 10),
-                                SizedBox(
-                                  height: 20,
-                                  child: VerticalDivider(
-                                    color: Colors.black,
-                                    thickness: 2,
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                const Icon(
-                                  Icons.thumb_down,
-                                  size: 15.5,
-                                ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
                           const Padding(
                             padding: EdgeInsets.only(left: 9, right: 9),
@@ -316,28 +304,36 @@ class _VideoState extends ConsumerState<Video> {
                     horizontal: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: Colors.grey.shade200,
                     borderRadius: BorderRadius.all(
                       Radius.circular(8),
                     ),
                   ),
                   child: Consumer(
                     builder: (context, ref, child) {
-                      return SizedBox();
-                      // final AsyncValue<List<CommentModel>> comments = ref.watch(
-                      //   commentsProvider(widget.video.videoId),
-                      // );
+                      final AsyncValue<List<CommentModel>> comments = ref.watch(
+                        commentsProvider(widget.video.videoId),
+                      );
+                      if (comments.value == null || comments.value!.isEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          child: const SizedBox(
+                            height: 20,
+                            child: Text(
+                              "No comments...",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
 
-                      // if (comments.value!.isEmpty) {
-                      //   return const SizedBox(
-                      //     height: 20,
-                      //   );
-                      // }
-
-                      // return VideoFirstComment(
-                      //   comments: comments.value!,
-                      //   user: user.value!,
-                      // );
+                      return VideoFirstComment(
+                        comments: comments.value!,
+                        user: user.value!,
+                      );
                     },
                   ),
                 ),

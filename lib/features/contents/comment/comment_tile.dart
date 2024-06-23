@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:vidstream/features/upload/comments/comment_model.dart';
 
 class CommentTile extends StatelessWidget {
@@ -43,9 +44,9 @@ class CommentTile extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      const Text(
-                        'a moment ago..',
-                        style: TextStyle(
+                      Text(
+                        timeago.format(comment.datePublished),
+                        style: const TextStyle(
                           color: Colors.blueGrey,
                         ),
                       ),

@@ -143,6 +143,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           videoId: widget.video.videoId,
                           userName: user.value!.userName,
                           profilePic: user.value!.profilePic,
+                          datePublished: DateTime.now(),
                         );
                   },
                   icon: const Icon(Icons.send),
