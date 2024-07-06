@@ -19,6 +19,7 @@ void showErrorSnackBar(String message, context) =>
 Future pickVideo(context) async {
   XFile? file = await ImagePicker().pickVideo(source: ImageSource.gallery);
   File video = File(file!.path);
+  Navigator.pop(context);
   Navigator.push(context, MaterialPageRoute(
     builder: (context) {
       return LongVideoDetailsPage(
@@ -31,6 +32,7 @@ Future pickVideo(context) async {
 Future pickShortVideo(context) async {
   XFile? file = await ImagePicker().pickVideo(source: ImageSource.gallery);
   File video = File(file!.path);
+  Navigator.pop(context);
   Navigator.push(context, MaterialPageRoute(
     builder: (context) {
       return ShortVideoScreen(
@@ -53,3 +55,13 @@ Future<String> putFileInStorage(file, number, fileType) async {
   String downloadUrl = await snapshot.ref.getDownloadURL();
   return downloadUrl;
 }
+String renderSubscriptionText(List<String> subscribers) {
+      if (subscribers.isNotEmpty) {
+        if (subscribers.length == 1) {
+          return '1 subscriber';
+        } else {
+          return '${subscribers.length} subscribers';
+        }
+      }
+      return 'No subscribers';
+    }

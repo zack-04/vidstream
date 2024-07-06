@@ -2,14 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/repository/user_data_service.dart';
 
-final currentUserProvider = FutureProvider<UserModel>((ref) async {
-  final UserModel userModel =
-      await ref.watch(userDataServiceProvider).fetchCurrenUserData();
-  return userModel;
+final currentUserProvider = StreamProvider<UserModel>((ref) {
+  return ref.watch(userDataServiceProvider).fetchCurrenUserData();
 });
 
-final anyDataUserProvider = FutureProvider.family((ref, userId) async {
-  final UserModel userModel =
-      await ref.watch(userDataServiceProvider).fetchAnyUserData(userId);
-  return userModel;
+final anyDataUserProvider =
+    StreamProvider.family<UserModel, String>((ref, userId) {
+  return ref.watch(userDataServiceProvider).fetchAnyUserData(userId);
+});
+
+final subscribedChannelsProvider = FutureProvider<List<UserModel>>((ref) async {
+  final currentUser = ref.watch(currentUserProvider);
+  final subscribedChannels = currentUser.value!.subscribedChannels;
+
+  return ref
+      .watch(userDataServiceProvider)
+      .fetchSubscribedChannels(subscribedChannels);
 });

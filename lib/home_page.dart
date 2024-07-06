@@ -1,8 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 import 'package:flutter/material.dart';
-import 'package:vidstream/cores/widgets/image_button.dart';
+import 'package:flutter/services.dart';
 import 'package:vidstream/features/contents/bottom_nav_bar.dart';
-import 'package:vidstream/features/search/pages/search_page.dart';
 import 'package:vidstream/features/upload/upload_bottom_sheet.dart';
 import 'package:vidstream/pages_list.dart';
 
@@ -17,65 +16,30 @@ class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
+            ? Brightness.light
+            : Brightness.dark,
+        systemNavigationBarColor:
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
+        systemNavigationBarIconBrightness:
+            Theme.of(context).brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
+      ),
+    );
     return Scaffold(
-      backgroundColor: const Color(0xffFFFFFF),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    const Text(
-                      'VidStream',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    const SizedBox(width: 4),
-                    const Spacer(),
-                    SizedBox(
-                      height: 45,
-                      child: ImageButton(
-                        image: "cast.png",
-                        onPressed: () {},
-                        haveColor: false,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ImageButton(
-                        image: "notification.png",
-                        onPressed: () {},
-                        haveColor: false,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 43,
-                      child: ImageButton(
-                        image: "search.png",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SearchPage(),
-                            ),
-                          );
-                        },
-                        haveColor: false,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: pages[currentIndex],
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            Expanded(
+              child: pages[currentIndex],
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigation(
@@ -85,6 +49,9 @@ class _HomePageState extends State<HomePage> {
             setState(() {});
           } else {
             showModalBottomSheet(
+              backgroundColor: (Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black.withOpacity(0.95)
+                  : Colors.white),
               context: context,
               builder: (context) => const CreateBottomSheet(),
             );

@@ -26,7 +26,7 @@ class CommentTile extends StatelessWidget {
                 backgroundImage: CachedNetworkImageProvider(comment.profilePic),
               ),
               const SizedBox(
-                width: 5,
+                width: 10,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,8 +37,8 @@ class CommentTile extends StatelessWidget {
                       Text(
                         '@${comment.userName}',
                         style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
                       const SizedBox(
@@ -47,15 +47,18 @@ class CommentTile extends StatelessWidget {
                       Text(
                         timeago.format(comment.datePublished),
                         style: const TextStyle(
-                          color: Colors.blueGrey,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Text(
                     comment.commentText,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 17,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

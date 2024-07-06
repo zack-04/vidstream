@@ -30,8 +30,9 @@ class UserDataService {
       userName: userName,
       email: email,
       profilePic: profilePic,
-      subscriptions: [],
-      videos: 0,
+      coverImageUrl: '',
+      subscribedChannels: [],
+      subscribers: [],
       userId: auth.currentUser!.uid,
       description: description,
       type: "user",
@@ -43,21 +44,44 @@ class UserDataService {
         .set(userModel.toMap());
   }
 
- Future<UserModel> fetchCurrenUserData() async {
-    final currentUserMap = await FirebaseFirestore.instance
+  Stream<UserModel> fetchCurrenUserData() {
+    return FirebaseFirestore.instance
         .collection('Users')
         .doc(auth.currentUser!.uid)
-        .get();
-    UserModel userModel = UserModel.fromMap(currentUserMap.data()!);
-    return userModel;
+        .snapshots()
+        .map((snapshot) => UserModel.fromMap(snapshot.data()!));
   }
 
-  Future<UserModel> fetchAnyUserData(userId) async {
-    final currentUserMap = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(userId)
-        .get();
-    UserModel userModel = UserModel.fromMap(currentUserMap.data()!);
-    return userModel;
+  Future<List<UserModel>> fetchSubscribedChannels(
+      List<String> subscribedUserIds) async {
+    if (subscribedUserIds.isEmpty) {
+      return [];
+    }
+
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .where(FieldPath.documentId, whereIn: subscribedUserIds)
+          .get();
+      print(snapshot.docs);
+
+      return snapshot.docs.map((doc) => UserModel.fromDocument(doc)).toList();
+    } catch (e) {
+      print('Error : $e');
+    }
+    return [];
+  }
+
+  Stream<UserModel> fetchAnyUserData(userId) {
+    try {
+      return FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .snapshots()
+          .map((snapshot) => UserModel.fromMap(snapshot.data()!));
+    } catch (e) {
+      print(e.toString());
+      return const Stream.empty();
+    }
   }
 }

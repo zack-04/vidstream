@@ -13,25 +13,41 @@ class ShortVideoPage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('shorts').snapshots(),
+          stream: FirebaseFirestore.instance.collection('shorts').snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.data == null || !snapshot.hasData) {
-              return const ErrorPage();
-            } else if (snapshot.connectionState ==
-                ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Loader();
+            } else if (snapshot.hasError) {
+              return const ErrorPage();
+            } else if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+              return Container(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : Colors.white,
+                child: Center(
+                  child: Text(
+                    'No shorts...',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return PageView.builder(
+                itemCount: snapshot.data!.docs.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  final shortVideoMaps = snapshot.data!.docs;
+                  final shortVideoModel =
+                      ShortVideoModel.fromMap(shortVideoMaps[index].data());
+                  return ShortVideoTile(shortVideoModel: shortVideoModel);
+                },
+              );
             }
-            return PageView.builder(
-              itemCount: snapshot.data!.docs.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                final shortVideoMaps = snapshot.data!.docs;
-                final shortVideoModel =
-                    ShortVideoModel.fromMap(shortVideoMaps[index].data());
-                return ShortVideoTile(shortVideoModel: shortVideoModel);
-              },
-            );
           },
         ),
       ),

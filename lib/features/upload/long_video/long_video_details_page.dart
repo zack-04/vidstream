@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,12 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
   File? image;
   bool isThumbnailSelected = false;
   bool isLoading = false;
+  final FocusNode _descriptionFocusNode = FocusNode();
+  @override
+  void dispose() {
+    _descriptionFocusNode.dispose(); // Dispose focus node when not needed
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +46,7 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
             title: const Text(
               'Add details',
               style: TextStyle(
-                fontSize: 25,
-                color: Color.fromARGB(255, 106, 105, 105),
+                fontSize: 23,
               ),
             ),
           ),
@@ -108,6 +114,13 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
                           TextField(
                             controller: descriptionController,
                             maxLines: 5,
+                            focusNode: _descriptionFocusNode,
+                            textInputAction:
+                                TextInputAction.done, // Set text input action
+                            onEditingComplete: () {
+                              _descriptionFocusNode
+                                  .unfocus(); // Unfocus on submit
+                            },
                             decoration: const InputDecoration(
                               hintText: "Enter the Description",
                               border: OutlineInputBorder(
@@ -119,6 +132,66 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
                           ),
                           const SizedBox(height: 100),
                           const Spacer(),
+                          isThumbnailSelected
+                              ? Container(
+                                  color: Colors.transparent,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 15),
+                                  child: FlatButton(
+                                    text: 'Publish',
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      String thumbnailUrl = await putFileInStorage(
+                                          image, randomNumber, "image");
+                                      String videoUrl = await putFileInStorage(
+                                          widget.video, randomNumber, "video");
+                                      await ref
+                                          .watch(longVideoProvider)
+                                          .uploadVideoToFirestore(
+                                            videoUrl: videoUrl,
+                                            thumbnail: thumbnailUrl,
+                                            title: titleController.text,
+                                            description:
+                                                descriptionController.text,
+                                            videoId: videoId,
+                                            datePublished: DateTime.now(),
+                                            userId: FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                          );
+
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      if (mounted) {
+                                        // ignore: use_build_context_synchronously
+                                        Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomePage(),
+                                          ),
+                                        );
+                                        // ignore: use_build_context_synchronously
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Video uploaded successfully',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    color: Colors.green,
+                                  ),
+                                )
+                              : const SizedBox(),
                         ],
                       ),
                     ),
@@ -127,61 +200,21 @@ class _LongVideoDetailsPageState extends ConsumerState<LongVideoDetailsPage> {
               );
             },
           ),
-          bottomNavigationBar: isThumbnailSelected
-              ? Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  child: FlatButton(
-                    text: 'Publish',
-                    onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      String thumbnail =
-                          await putFileInStorage(image, randomNumber, "image");
-                      String videoUrl = await putFileInStorage(
-                          widget.video, randomNumber, "video");
-                      await ref.watch(longVideoProvider).uploadVideoToFirestore(
-                            videoUrl: videoUrl,
-                            thumbnail: thumbnail,
-                            title: titleController.text,
-                            description: descriptionController.text,
-                            videoId: videoId,
-                            datePublished: DateTime.now(),
-                            userId: FirebaseAuth.instance.currentUser!.uid,
-                          );
-                      await ref.watch(longVideoProvider).incrementVideoCount(
-                          FirebaseAuth.instance.currentUser!.uid);
-        
-                      setState(() {
-                        isLoading = false;
-                      });
-                      if (mounted) {
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      }
-                    },
-                    colour: Colors.green,
-                  ),
-                )
-              : const SizedBox(),
         ),
         Visibility(
-            visible: isLoading,
-            child: Container(
-              color: Colors.black.withOpacity(0.3),
-              width: double.infinity,
-              child: const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.black,
-                ),
+          visible: isLoading,
+          child: Container(
+            color: Colors.black.withOpacity(0.3),
+            width: double.infinity,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
           ),
+        ),
       ],
     );
   }

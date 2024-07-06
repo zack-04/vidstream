@@ -28,130 +28,162 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider).whenData((user) => user);
     return SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+          ),
+          child: IntrinsicHeight(
+            child: Column(
               children: [
-                const Text(
-                  'Comments',
-                  style: TextStyle(
-                    fontSize: 25,
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15, right: 15, top: 15, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Comments',
+                        style: TextStyle(
+                          fontSize: 25,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          size: 30,
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
+                SizedBox(
+                  child: Divider(
+                    color: Colors.grey.shade400,
+                    thickness: 0.5,
+                  ),
+                ),
+                // SizedBox(
+                //   height: MediaQuery.of(context).size.height * 0.35,
+                //   child: const Center(
+                //     child: Text("No comments yet."),
+                //   ),
+                // ),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('comments')
+                      .where('videoId', isEqualTo: widget.video.videoId)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Loader();
+                    } else if (!snapshot.hasData || snapshot.data == null) {
+                      return const ErrorPage();
+                    }
+                    final commentMap = snapshot.data!.docs;
+                    final comments = commentMap
+                        .map((comment) => CommentModel.fromMap(comment.data()))
+                        .toList();
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: comments.length,
+                        itemBuilder: (context, index) {
+                          return CommentTile(
+                            comment: comments[index],
+                          );
+                        },
+                      ),
+                    );
                   },
-                  icon: const Icon(
-                    Icons.close,
-                    size: 30,
+                ),
+
+                const SizedBox(
+                  child: Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.grey,
+                        backgroundImage:
+                            CachedNetworkImageProvider(user.value!.profilePic),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextField(
+                            controller: commentController,
+                            cursorColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                            decoration: InputDecoration(
+                              hintText: 'Add a comment...',
+                              hintStyle: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white70
+                                    : Colors.black54,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10.0,
+                                horizontal: 15.0,
+                              ),
+                              fillColor: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.grey.shade800
+                                  : const Color(0xfff2f2f2),
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // const SizedBox(
+                      //   width: 10,
+                      // ),
+                      IconButton(
+                        onPressed: () async {
+                          FocusScope.of(context).unfocus();
+
+                          await ref
+                              .watch(commentProvider)
+                              .uploadCommentToFirestore(
+                                commentText: commentController.text,
+                                videoId: widget.video.videoId,
+                                userName: user.value!.userName,
+                                profilePic: user.value!.profilePic,
+                                datePublished: DateTime.now(),
+                              );
+                          commentController.clear();
+                        },
+                        icon: const Icon(Icons.send),
+                      ),
+                    ],
                   ),
                 )
               ],
             ),
           ),
-          SizedBox(
-            child: Divider(
-              color: Colors.grey.shade400,
-              thickness: 1.5,
-            ),
-          ),
-          // SizedBox(
-          //   height: MediaQuery.of(context).size.height * 0.35,
-          //   child: const Center(
-          //     child: Text("No comments yet."),
-          //   ),
-          // ),
-          StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('comments')
-                .where('videoId', isEqualTo: widget.video.videoId)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data == null) {
-                return const ErrorPage();
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Loader();
-              }
-              final commentMap = snapshot.data!.docs;
-              final comments = commentMap
-                  .map((comment) => CommentModel.fromMap(comment.data()))
-                  .toList();
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: comments.length,
-                  itemBuilder: (context, index) {
-                    return CommentTile(
-                      comment: comments[index],
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-
-          const SizedBox(
-            child: Divider(
-              color: Colors.grey,
-              thickness: 1.5,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.grey,
-                  backgroundImage:
-                      CachedNetworkImageProvider(user.value!.profilePic),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: TextField(
-                      controller: commentController,
-                      decoration: const InputDecoration(
-                        hintText: 'Add a comment...',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0,
-                          horizontal: 15.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                IconButton(
-                  onPressed: () async {
-                    await ref.watch(commentProvider).uploadCommentToFirestore(
-                          commentText: commentController.text,
-                          videoId: widget.video.videoId,
-                          userName: user.value!.userName,
-                          profilePic: user.value!.profilePic,
-                          datePublished: DateTime.now(),
-                        );
-                  },
-                  icon: const Icon(Icons.send),
-                ),
-              ],
-            ),
-          )
-        ],
+        ),
       ),
     );
   }

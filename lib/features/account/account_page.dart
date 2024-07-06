@@ -1,12 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vidstream/cores/screens/error_page.dart';
+import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/features/account/items.dart';
-import 'package:vidstream/features/auth/model/user_model.dart';
+import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/channel/my_channel/pages/my_channel_page.dart';
 
 class AccountPage extends StatelessWidget {
-  final UserModel user;
-  const AccountPage({super.key, required this.user});
+  const AccountPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,69 +21,80 @@ class AccountPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
           child: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyChannelPage(),
-                    ),
-                  );
+              GestureDetector(onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyChannelPage(),
+                  ),
+                );
+              }, child: Consumer(
+                builder: (context, ref, child) {
+                  return ref.watch(currentUserProvider).when(
+                        data: (user) {
+                          return Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                radius: 35,
+                                backgroundImage:
+                                    CachedNetworkImageProvider(user.profilePic),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.displayName,
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '@${user.userName}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      const Icon(
+                                        Icons.circle,
+                                        size: 5,
+                                      ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                        "View channel",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : const Color.fromRGBO(
+                                                  96, 96, 96, 1.0),
+                                        ),
+                                      ),
+                                      const Icon(Icons.arrow_right)
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
+                          );
+                        },
+                        error: (error, stackTrace) => const ErrorPage(),
+                        loading: () => const Loader(),
+                      );
                 },
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      radius: 35,
-                      backgroundImage:
-                          CachedNetworkImageProvider(user.profilePic),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user.displayName,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '@${user.userName}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            const Icon(
-                              Icons.circle,
-                              size: 5,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            const Text(
-                              "View channel",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black45,
-                              ),
-                            ),
-                            const Icon(Icons.arrow_right)
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              )),
               const SizedBox(
                 height: 20,
               ),

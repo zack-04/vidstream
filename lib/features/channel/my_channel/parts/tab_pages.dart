@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vidstream/features/channel/my_channel/pages/home_channel_page.dart';
+import 'package:vidstream/features/channel/my_channel/pages/short_channel_page.dart';
+import 'package:vidstream/features/channel/my_channel/pages/video_channel_page.dart';
 
 class TabPages extends StatelessWidget {
   const TabPages({super.key});
@@ -10,12 +12,8 @@ class TabPages extends StatelessWidget {
       child: TabBarView(
         children: [
           HomeChannelPage(),
-          Center(
-            child: Text('Videos'),
-          ),
-          Center(
-            child: Text('Shorts'),
-          ),
+          VideoChannelPage(),
+          ShortsChannelPage(),
           Center(
             child: Text('Playlists'),
           ),

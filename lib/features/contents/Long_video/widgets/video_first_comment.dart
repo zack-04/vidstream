@@ -23,11 +23,14 @@ class VideoFirstComment extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Text(
+              Text(
                 "Comments",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               const SizedBox(width: 5),
@@ -35,6 +38,9 @@ class VideoFirstComment extends StatelessWidget {
                 "${comments.length}",
                 style: TextStyle(
                   fontSize: 17,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
             ],
@@ -56,10 +62,13 @@ class VideoFirstComment extends StatelessWidget {
                   child: Text(
                     comments[0].commentText,
                     maxLines: 2,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 15,
                       overflow: TextOverflow.ellipsis,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
                     ),
                   ),
                 ),

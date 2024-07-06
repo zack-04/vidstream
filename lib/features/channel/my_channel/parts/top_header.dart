@@ -1,6 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vidstream/cores/methods.dart';
+import 'package:vidstream/cores/screens/error_page.dart';
+import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/features/auth/model/user_model.dart';
+import 'package:vidstream/features/channel/users_channel/provider/channel_provider.dart';
 
 class TopHeader extends StatelessWidget {
   final UserModel userModel;
@@ -11,6 +16,8 @@ class TopHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Column(
       children: [
         Row(
@@ -35,20 +42,22 @@ class TopHeader extends StatelessWidget {
                 ),
                 Text(
                   '@${userModel.userName}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color.fromRGBO(96, 96, 96, 1.0),
                   ),
                 ),
                 Row(
                   children: [
                     Text(
-                      userModel.subscriptions.isEmpty
-                          ? 'No subscriptions'
-                          : "${userModel.subscriptions.length} subscriptions",
-                      style: const TextStyle(
+                      renderSubscriptionText(userModel.subscribers),
+                      style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color.fromRGBO(96, 96, 96, 1.0),
                       ),
                     ),
                     const SizedBox(
@@ -61,12 +70,27 @@ class TopHeader extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    Text(
-                      "${userModel.videos} videos",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey,
-                      ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        return ref
+                            .watch(eachChannelVideosProvider(userModel.userId))
+                            .when(
+                              data: (data) {
+                                return Text(
+                                  "${data.length} videos",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : const Color.fromRGBO(96, 96, 96, 1.0),
+                                  ),
+                                );
+                              },
+                              error: (error, stackTrace) => const ErrorPage(),
+                              loading: () => const Loader(),
+                            );
+                      },
                     )
                   ],
                 )

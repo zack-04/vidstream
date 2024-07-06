@@ -2,16 +2,19 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uuid/uuid.dart';
+import 'package:video_player/video_player.dart';
 import 'package:vidstream/cores/methods.dart';
 import 'package:vidstream/cores/screens/error_page.dart';
 import 'package:vidstream/cores/screens/loader.dart';
-import 'package:vidstream/cores/widgets/flat_button.dart';
+import 'package:vidstream/cores/widgets/visibility.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 import 'package:vidstream/features/upload/short_video/repository/short_video_repository.dart';
+import 'package:vidstream/features/upload/short_video/widgets/custom_elevated_button.dart';
 import 'package:vidstream/home_page.dart';
 
 class ShortVideoDetailPage extends ConsumerStatefulWidget {
@@ -31,6 +34,77 @@ class _ShortVideoDetailPageState extends ConsumerState<ShortVideoDetailPage> {
   final DateTime date = DateTime.now();
   String randomNumber = const Uuid().v4();
   bool isLoading = false;
+  FlickManager? flickManager;
+  late VideoPlayerController videoPlayerController;
+  String videoDuration = '';
+
+  @override
+  void initState() {
+    super.initState();
+    videoPlayerController = VideoPlayerController.file(widget.video);
+
+    videoPlayerController.initialize().then((_) {
+      setState(() {
+        videoDuration = _formatDuration(videoPlayerController.value.duration);
+      });
+    });
+    flickManager = FlickManager(
+      videoPlayerController: videoPlayerController,
+    );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return [if (duration.inHours > 0) hours, minutes, seconds].join(':');
+  }
+
+  Future<void> uploadShortVideo(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      isLoading = true;
+    });
+    String videoUrl =
+        await putFileInStorage(widget.video, randomNumber, "shorts");
+    await ref.watch(shortVideoProvider).addShortVideoToFireStore(
+          caption: captionController.text,
+          shortVideo: videoUrl,
+          datePublished: date,
+        );
+    setState(() {
+      isLoading = true;
+    });
+
+    Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+        (route) => false);
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Short uploaded successfully',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+          ),
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    flickManager!.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -44,8 +118,6 @@ class _ShortVideoDetailPageState extends ConsumerState<ShortVideoDetailPage> {
                 fontSize: 25,
               ),
             ),
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
           ),
           body: SafeArea(
             child: Padding(
@@ -57,23 +129,45 @@ class _ShortVideoDetailPageState extends ConsumerState<ShortVideoDetailPage> {
                     children: [
                       Stack(
                         children: [
-                          Container(
-                            height: 120,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.blue,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: SizedBox(
+                              height: 120,
+                              width: 100,
+                              child: FlickVideoPlayer(
+                                flickManager: flickManager!,
+                                flickVideoWithControls:
+                                    const FlickVideoWithControls(
+                                  videoFit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
                           Positioned(
-                            left: 10,
-                            top: 10,
-                            child: GestureDetector(
-                              onTap: () async {},
-                              child: const FaIcon(
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: const FaIcon(
                                 FontAwesomeIcons.pen,
                                 color: Colors.white,
                                 size: 15,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 5,
+                            child: Container(
+                              color: Colors.black54,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 5,
+                              ),
+                              child: Text(
+                                videoDuration,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                ),
                               ),
                             ),
                           ),
@@ -146,56 +240,18 @@ class _ShortVideoDetailPageState extends ConsumerState<ShortVideoDetailPage> {
                         loading: () => const Loader(),
                       ),
                   const Spacer(),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    width: double.infinity,
-                    child: FlatButton(
-                      text: 'Publish',
-                      onPressed: () async {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        String videoUrl = await putFileInStorage(
-                            widget.video, randomNumber, "shorts");
-                        await ref
-                            .watch(shortVideoProvider)
-                            .addShortVideoToFireStore(
-                              caption: captionController.text,
-                              shortVideo: videoUrl,
-                              datePublished: date,
-                            );
-                        setState(() {
-                          isLoading = true;
-                        });
-                        Navigator.push(
-                          // ignore: use_build_context_synchronously
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      },
-                      colour: Colors.green,
-                    ),
+                  CustomElevatedButton(
+                    text: 'Upload Short',
+                    onPressed: () async {
+                      uploadShortVideo(context);
+                    },
                   ),
                 ],
               ),
             ),
           ),
         ),
-        Visibility(
-          visible: isLoading,
-          child: Container(
-            color: Colors.black.withOpacity(0.3),
-            width: double.infinity,
-            child: const Center(
-              child: CircularProgressIndicator(
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
+        VisibilityLoader(visible: isLoading),
       ],
     );
   }

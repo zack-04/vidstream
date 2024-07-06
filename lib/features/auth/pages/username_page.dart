@@ -2,7 +2,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:vidstream/features/auth/repository/user_data_service.dart';
 
 class UserNamePage extends ConsumerStatefulWidget {
@@ -45,21 +44,23 @@ class _UserNamePageState extends ConsumerState<UserNamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: Text(
+            'Account setup',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             children: [
-              const Text(
-                'USERNAME PAGE',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               Form(
                 key: formKey,
                 child: Column(
@@ -76,7 +77,11 @@ class _UserNamePageState extends ConsumerState<UserNamePage> {
                       cursorColor: Colors.black54,
                       decoration: InputDecoration(
                         label: const Text('Enter username'),
-                        labelStyle: const TextStyle(color: Colors.black54),
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
                         suffixIcon: isValidate
                             ? const Icon(Icons.verified_user_rounded)
                             : const Icon(Icons.cancel),

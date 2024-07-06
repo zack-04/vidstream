@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vidstream/cores/widgets/image_item.dart';
+import 'package:vidstream/features/account/settings_screen.dart';
 
 class Items extends StatelessWidget {
   const Items({super.key});
@@ -15,7 +16,6 @@ class Items extends StatelessWidget {
               imageName: "your-channel.png",
               itemClicked: () {},
               itemText: "Your Channel",
-              haveColor: false,
             ),
           ),
           const SizedBox(height: 6.5),
@@ -25,7 +25,6 @@ class Items extends StatelessWidget {
               imageName: "your-channel.png",
               itemClicked: () {},
               itemText: "Turn on Incognito",
-              haveColor: false,
             ),
           ),
           const SizedBox(height: 6.5),
@@ -35,13 +34,14 @@ class Items extends StatelessWidget {
               imageName: "add-account.png",
               itemClicked: () {},
               itemText: "Add Account",
-              haveColor: false,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 6, bottom: 6),
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 6),
             child: Divider(
-              color: Colors.blueGrey,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.blueGrey,
             ),
           ),
           SizedBox(
@@ -50,7 +50,6 @@ class Items extends StatelessWidget {
               imageName: "purchases.png",
               itemClicked: () {},
               itemText: "Purchases and Membership",
-              haveColor: false,
             ),
           ),
           const SizedBox(height: 7),
@@ -60,7 +59,6 @@ class Items extends StatelessWidget {
               imageName: "time-watched.png",
               itemClicked: () {},
               itemText: "Time watched",
-              haveColor: false,
             ),
           ),
           const SizedBox(height: 9),
@@ -70,22 +68,29 @@ class Items extends StatelessWidget {
               imageName: "your-data.png",
               itemClicked: () {},
               itemText: "Your data in Youtube",
-              haveColor: false,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 6, bottom: 6),
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 6),
             child: Divider(
-              color: Colors.blueGrey,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.blueGrey,
             ),
           ),
           SizedBox(
             height: 33,
             child: ImageItem(
               imageName: "settings.png",
-              itemClicked: () {},
+              itemClicked: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                );
+              },
               itemText: "Settings",
-              haveColor: false,
             ),
           ),
           const SizedBox(height: 8),
@@ -95,7 +100,6 @@ class Items extends StatelessWidget {
               imageName: "help.png",
               itemClicked: () {},
               itemText: "Help & feedback",
-              haveColor: false,
             ),
           ),
         ],

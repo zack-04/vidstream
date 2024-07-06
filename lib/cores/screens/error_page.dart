@@ -7,7 +7,7 @@ class ErrorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        "Something went wrong please try again later",
+        "Something went wrong \nplease try again later",
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,

@@ -4,31 +4,32 @@ import 'package:flutter/material.dart';
 class ImageButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String image;
-  final bool haveColor;
+  final bool showBgColor;
   const ImageButton({
-    super.key,
+    Key? key,
     required this.onPressed,
     required this.image,
-    required this.haveColor,
-  });
+    this.showBgColor = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const Color softBlueGreyBackGround = Color(0xffF2F2F2);
     return GestureDetector(
       onTap: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
         child: Container(
-          padding: const EdgeInsets.only(top: 7.6, bottom: 7.6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
-            color: haveColor ? softBlueGreyBackGround : null,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(12),
-            ),
+            color: showBgColor == true
+                ? Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade200
+                : Colors.transparent,
           ),
           child: Image.asset(
             "assets/icons/$image",
+            color: Theme.of(context).iconTheme.color,
             height: 23,
           ),
         ),

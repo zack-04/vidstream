@@ -17,9 +17,11 @@ class VideoExtraButton extends StatelessWidget {
         horizontal: 12,
         vertical: 5,
       ),
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 237, 236, 236),
-        borderRadius: BorderRadius.all(
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color.fromRGBO(255, 255, 255, 0.1)
+            : const Color.fromARGB(19, 63, 62, 62),
+        borderRadius: const BorderRadius.all(
           Radius.circular(25),
         ),
       ),
@@ -28,13 +30,19 @@ class VideoExtraButton extends StatelessWidget {
           Icon(
             iconData,
             size: 18,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
           const SizedBox(width: 6),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
           ),
         ],

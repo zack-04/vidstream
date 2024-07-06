@@ -13,6 +13,9 @@ class LongVideoRepository {
   LongVideoRepository({
     required this.firestore,
   });
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getVideoStream(String videoId) {
+    return firestore.collection('videos').doc(videoId).snapshots();
+  }
 
   uploadVideoToFirestore({
     required String videoUrl,
@@ -50,7 +53,7 @@ class LongVideoRepository {
         'likes': FieldValue.arrayUnion([currentUserId])
       });
     }
-    if (likes.contains(currentUserId)) {
+    else if(likes.contains(currentUserId)) {
       await FirebaseFirestore.instance
           .collection('videos')
           .doc(videoId)
@@ -60,9 +63,5 @@ class LongVideoRepository {
     }
   }
 
-  Future<void> incrementVideoCount(String userId) async {
-    await FirebaseFirestore.instance.collection('Users').doc(userId).update({
-      'videos': FieldValue.increment(1),
-    });
-  }
+  
 }

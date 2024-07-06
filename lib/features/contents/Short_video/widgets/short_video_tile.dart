@@ -67,15 +67,11 @@ class _ShortVideoTileState extends ConsumerState<ShortVideoTile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AspectRatio(
-              aspectRatio: 11 / 16,
+              aspectRatio: 11 / 17.5,
               child: FlickVideoPlayer(flickManager: flickManager!),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: user.when(
                 data: (user) => Row(
                   children: [

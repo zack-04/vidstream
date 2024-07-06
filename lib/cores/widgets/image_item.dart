@@ -5,13 +5,11 @@ class ImageItem extends StatelessWidget {
   final String itemText;
   final VoidCallback itemClicked;
   final String imageName;
-  final bool? haveColor;
   const ImageItem({
     super.key,
     required this.itemText,
     required this.itemClicked,
     required this.imageName,
-    this.haveColor,
   });
 
   @override
@@ -28,12 +26,13 @@ class ImageItem extends StatelessWidget {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(25),
                 ),
-                color: haveColor! ? const Color(0xffF2F2F2) : null,
+                
               ),
               child: GestureDetector(
                 onTap: itemClicked,
                 child: Image.asset(
                   "assets/icons/$imageName",
+                  color: Theme.of(context).iconTheme.color,
                 ),
               ),
             ),

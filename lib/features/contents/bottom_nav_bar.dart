@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vidstream/cores/screens/error_page.dart';
 import 'package:vidstream/cores/screens/loader.dart';
-import 'package:vidstream/features/account/account_page.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -25,8 +24,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor:
+          Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+      unselectedItemColor:
+          Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
       type: BottomNavigationBarType.fixed,
       items: [
         const BottomNavigationBarItem(
@@ -41,8 +42,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
         BottomNavigationBarItem(
           icon: Container(
-            width: 45,
-            height: 45,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -59,30 +60,20 @@ class _BottomNavigationState extends State<BottomNavigation> {
           label: "",
         ),
         const BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.solidBell),
+          icon: FaIcon(
+            FontAwesomeIcons.solidBell,
+          ),
           label: 'Subscriptions',
         ),
         BottomNavigationBarItem(
           icon: Consumer(
             builder: (context, ref, child) {
               return ref.watch(currentUserProvider).when(
-                    data: (currentUser) => GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AccountPage(
-                              user: currentUser,
-                            ),
-                          ),
-                        );
-                      },
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: CachedNetworkImageProvider(
-                          currentUser.profilePic,
-                        ),
+                    data: (currentUser) => CircleAvatar(
+                      radius: 15,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: CachedNetworkImageProvider(
+                        currentUser.profilePic,
                       ),
                     ),
                     error: (error, stackTrace) => const ErrorPage(),

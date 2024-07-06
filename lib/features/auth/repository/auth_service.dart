@@ -9,6 +9,7 @@ final authServiceProvider = Provider(
   ),
 );
 
+
 class AuthService {
   AuthService({
     required this.auth,
@@ -25,5 +26,10 @@ class AuthService {
       idToken: googleAuth.idToken,
     );
     await auth.signInWithCredential(credential);
+  }
+
+  Future<void> signOut() async {
+    await auth.signOut();
+    await googleSignIn.signOut();
   }
 }
