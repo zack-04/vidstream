@@ -64,7 +64,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                 ),
                 SizedBox(
                   child: Divider(
-                    color: Colors.grey.shade400,
+                    color: Colors.grey.shade700,
                     thickness: 0.5,
                   ),
                 ),
@@ -102,9 +102,9 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                   },
                 ),
 
-                const SizedBox(
+                 SizedBox(
                   child: Divider(
-                    color: Colors.grey,
+                    color: Colors.grey.shade700,
                     thickness: 0.5,
                   ),
                 ),

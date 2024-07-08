@@ -22,24 +22,24 @@ class MyChannelPage extends ConsumerWidget {
               length: 7,
               child: Scaffold(
                 appBar: AppBar(
-                  title: Text(currentUser.displayName),
+                  title: Text(currentUser!.displayName),
                   actions: [
                     SizedBox(
-                      height: 45,
+                      height: 50,
                       child: ImageButton(
                         image: "cast.png",
                         onPressed: () {},
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 45,
                       child: ImageButton(
                         image: "notification.png",
                         onPressed: () {},
                       ),
                     ),
                     SizedBox(
-                      height: 43,
+                      height: 48,
                       child: ImageButton(
                         image: "search.png",
                         onPressed: () {

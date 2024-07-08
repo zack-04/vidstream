@@ -45,8 +45,7 @@ class Post extends ConsumerWidget {
               width: double.infinity,
             ),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              // color: Colors.grey.shade300,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: Column(
                 children: [
                   Align(
@@ -158,7 +157,9 @@ class Post extends ConsumerWidget {
                         // const Spacer(),
                         Icon(
                           Icons.more_vert,
-                          color: Colors.black,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
                           size: 22,
                         ),
                       ],

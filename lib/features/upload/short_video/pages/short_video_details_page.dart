@@ -210,7 +210,7 @@ class _ShortVideoDetailPageState extends ConsumerState<ShortVideoDetailPage> {
                                 backgroundColor: Colors.grey,
                                 radius: 25,
                                 backgroundImage: CachedNetworkImageProvider(
-                                  currentUser.profilePic,
+                                  currentUser!.profilePic,
                                 ),
                               ),
                               const SizedBox(

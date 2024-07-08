@@ -74,7 +74,10 @@ class _UserNamePageState extends ConsumerState<UserNamePage> {
                         return isValidate ? null : "Username already taken";
                       },
                       controller: userNameController,
-                      cursorColor: Colors.black54,
+                      cursorColor:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black87,
                       decoration: InputDecoration(
                         label: const Text('Enter username'),
                         labelStyle: TextStyle(

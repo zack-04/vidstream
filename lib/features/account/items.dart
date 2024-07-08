@@ -1,105 +1,128 @@
 import 'package:flutter/material.dart';
-import 'package:vidstream/cores/widgets/image_item.dart';
-import 'package:vidstream/features/account/settings_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vidstream/cores/widgets/account_item.dart';
+import 'package:vidstream/features/auth/repository/auth_service.dart';
+import 'package:vidstream/features/channel/my_channel/pages/my_channel_page.dart';
+import 'package:vidstream/features/theme/theme_provider.dart';
+import 'package:vidstream/next_screen.dart';
 
-class Items extends StatelessWidget {
+class Items extends ConsumerWidget {
   const Items({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
       child: Column(
         children: [
-          SizedBox(
-            height: 35,
-            child: ImageItem(
-              imageName: "your-channel.png",
-              itemClicked: () {},
-              itemText: "Your Channel",
+          AccountItem(
+            itemText: "Your Channel",
+            itemClicked: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyChannelPage(),
+                ),
+              );
+            },
+            icon: FaIcon(
+              FontAwesomeIcons.user,
+              size: 20,
             ),
           ),
-          const SizedBox(height: 6.5),
-          SizedBox(
-            height: 34,
-            child: ImageItem(
-              imageName: "your-channel.png",
-              itemClicked: () {},
-              itemText: "Turn on Incognito",
+          AccountItem(
+            itemText: "Turn on Incognito",
+            itemClicked: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.user,
+              size: 20,
             ),
           ),
-          const SizedBox(height: 6.5),
-          SizedBox(
-            height: 34,
-            child: ImageItem(
-              imageName: "add-account.png",
-              itemClicked: () {},
-              itemText: "Add Account",
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6, bottom: 6),
-            child: Divider(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.blueGrey,
-            ),
-          ),
-          SizedBox(
-            height: 35,
-            child: ImageItem(
-              imageName: "purchases.png",
-              itemClicked: () {},
-              itemText: "Purchases and Membership",
-            ),
-          ),
-          const SizedBox(height: 7),
-          SizedBox(
-            height: 31,
-            child: ImageItem(
-              imageName: "time-watched.png",
-              itemClicked: () {},
-              itemText: "Time watched",
-            ),
-          ),
-          const SizedBox(height: 9),
-          SizedBox(
-            height: 31,
-            child: ImageItem(
-              imageName: "your-data.png",
-              itemClicked: () {},
-              itemText: "Your data in Youtube",
+          AccountItem(
+            itemText: "Add Account",
+            itemClicked: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.userPlus,
+              size: 20,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6, bottom: 6),
             child: Divider(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
+                  ? Colors.grey.shade700
                   : Colors.blueGrey,
+              thickness: 0.5,
             ),
           ),
-          SizedBox(
-            height: 33,
-            child: ImageItem(
-              imageName: "settings.png",
-              itemClicked: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsScreen(),
-                  ),
-                );
-              },
-              itemText: "Settings",
+          AccountItem(
+            itemText: "Purchases and Membership",
+            itemClicked: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.dollarSign,
+              size: 20,
             ),
           ),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 35,
-            child: ImageItem(
-              imageName: "help.png",
-              itemClicked: () {},
-              itemText: "Help & feedback",
+          AccountItem(
+            itemText: "Time watched",
+            itemClicked: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.chartSimple,
+              size: 20,
+            ),
+          ),
+          AccountItem(
+            itemText: "Your data in Vidstream",
+            itemClicked: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.circleInfo,
+              size: 20,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 6),
+            child: Divider(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.shade700
+                  : Colors.blueGrey,
+              thickness: 0.5,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 7),
+            child: ListTile(
+              title: const Text(
+                'Dark theme',
+                style: TextStyle(
+                  fontSize: 17,
+                ),
+              ),
+              leading: FaIcon(FontAwesomeIcons.moon),
+              trailing: Transform.scale(
+                scale: 0.85,
+                child: Switch(
+                  value: ref.watch(themeProvider) == ThemeMode.dark,
+                  onChanged: (bool value) {
+                    ref.read(themeProvider.notifier).toggleTheme(value);
+                  },
+                ),
+              ),
+            ),
+          ),
+          AccountItem(
+            itemText: "Logout",
+            itemClicked: () async {
+              await ref.read(authServiceProvider).signOut();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NextScreen(),
+                ),
+              );
+            },
+            icon: FaIcon(
+              FontAwesomeIcons.arrowRightFromBracket,
+              size: 20,
             ),
           ),
         ],

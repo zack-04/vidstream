@@ -109,7 +109,7 @@ class _ShortVideoScreenState extends State<ShortVideoScreen> {
                                       backgroundColor: Colors.grey,
                                       backgroundImage:
                                           CachedNetworkImageProvider(
-                                        currentUser.profilePic,
+                                        currentUser!.profilePic,
                                       ),
                                     );
                                   },

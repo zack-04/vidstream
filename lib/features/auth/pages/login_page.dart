@@ -21,7 +21,7 @@ class LoginPage extends ConsumerWidget {
                 Text(
                   'Watch Anywhere, Anytime.',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 25,
                     color: Theme.of(context).brightness == Brightness.dark
                         ? Colors.grey
                         : Colors.black87,

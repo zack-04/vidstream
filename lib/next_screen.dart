@@ -20,8 +20,6 @@ class NextScreen extends ConsumerWidget {
         } else if (!snapshot.hasData) {
           return const LoginPage();
         }
-        print('Has data : ${snapshot.hasData}');
-        print('Data : ${snapshot.data}');
         return StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('Users')

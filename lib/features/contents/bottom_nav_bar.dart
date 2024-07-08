@@ -7,7 +7,7 @@ import 'package:vidstream/cores/screens/error_page.dart';
 import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
 
-class BottomNavigation extends StatefulWidget {
+class BottomNavigation extends ConsumerStatefulWidget {
   final Function(int index) onPressed;
   const BottomNavigation({
     super.key,
@@ -15,82 +15,93 @@ class BottomNavigation extends StatefulWidget {
   });
 
   @override
-  State<BottomNavigation> createState() => _BottomNavigationState();
+  ConsumerState<BottomNavigation> createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> {
+class _BottomNavigationState extends ConsumerState<BottomNavigation> {
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor:
-          Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
-      unselectedItemColor:
-          Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
-      type: BottomNavigationBarType.fixed,
-      items: [
-        const BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.house),
-          label: 'Home',
-        ),
-        const BottomNavigationBarItem(
-          icon: FaIcon(
-            FontAwesomeIcons.video,
-          ),
-          label: 'Shorts',
-        ),
-        BottomNavigationBarItem(
-          icon: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.grey,
-                width: 2,
+    final authState = ref.watch(authStateChangesProvider);
+    return authState.when(
+      data: (user) {
+        if (user != null) {
+          return BottomNavigationBar(
+            selectedItemColor:
+                Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+            unselectedItemColor:
+                Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              const BottomNavigationBarItem(
+                icon: FaIcon(FontAwesomeIcons.house),
+                label: 'Home',
               ),
-            ),
-            child: const Center(
-              child: FaIcon(
-                FontAwesomeIcons.plus,
+              const BottomNavigationBarItem(
+                icon: FaIcon(
+                  FontAwesomeIcons.video,
+                ),
+                label: 'Shorts',
               ),
-            ),
-          ),
-          label: "",
-        ),
-        const BottomNavigationBarItem(
-          icon: FaIcon(
-            FontAwesomeIcons.solidBell,
-          ),
-          label: 'Subscriptions',
-        ),
-        BottomNavigationBarItem(
-          icon: Consumer(
-            builder: (context, ref, child) {
-              return ref.watch(currentUserProvider).when(
-                    data: (currentUser) => CircleAvatar(
-                      radius: 15,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: CachedNetworkImageProvider(
-                        currentUser.profilePic,
-                      ),
+              BottomNavigationBarItem(
+                icon: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 2,
                     ),
-                    error: (error, stackTrace) => const ErrorPage(),
-                    loading: () => const Loader(),
-                  );
+                  ),
+                  child: const Center(
+                    child: FaIcon(
+                      FontAwesomeIcons.plus,
+                    ),
+                  ),
+                ),
+                label: "",
+              ),
+              const BottomNavigationBarItem(
+                icon: FaIcon(
+                  FontAwesomeIcons.solidBell,
+                ),
+                label: 'Subscriptions',
+              ),
+              BottomNavigationBarItem(
+                icon: Consumer(
+                  builder: (context, ref, child) {
+                    return ref.watch(currentUserProvider).when(
+                          data: (currentUser) => CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: CachedNetworkImageProvider(
+                              currentUser!.profilePic,
+                            ),
+                          ),
+                          error: (error, stackTrace) => const ErrorPage(),
+                          loading: () => const Loader(),
+                        );
+                  },
+                ),
+                label: 'You',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: (value) {
+              setState(() {
+                _selectedIndex = value;
+              });
+              widget.onPressed(value);
             },
-          ),
-          label: 'You',
-        ),
-      ],
-      currentIndex: _selectedIndex,
-      onTap: (value) {
-        setState(() {
-          _selectedIndex = value;
-        });
-        widget.onPressed(value);
+          );
+        } else {
+          return SizedBox();
+        }
       },
+      error: (error, stackTrace) => ErrorPage(),
+      loading: () => Loader(),
     );
   }
 }

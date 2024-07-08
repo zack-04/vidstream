@@ -29,7 +29,7 @@ class FlatButton extends StatelessWidget {
             color: Theme.of(context).brightness == Brightness.dark
                 ? Colors.black
                 : Colors.white,
-            fontSize: 16,
+            fontSize: 17,
           ),
         ),
       ),

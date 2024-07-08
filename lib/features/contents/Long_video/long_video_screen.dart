@@ -36,21 +36,21 @@ class LongVideoScreen extends StatelessWidget {
                 const SizedBox(width: 4),
                 const Spacer(),
                 SizedBox(
-                  height: 45,
+                  height: 50,
                   child: ImageButton(
                     image: "cast.png",
                     onPressed: () {},
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 45,
                   child: ImageButton(
                     image: "notification.png",
                     onPressed: () {},
                   ),
                 ),
                 SizedBox(
-                  height: 43,
+                  height: 48,
                   child: ImageButton(
                     image: "search.png",
                     onPressed: () {
@@ -76,28 +76,46 @@ class LongVideoScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Loader();
-                } else if (!snapshot.hasData || snapshot.data == null) {
+                } else if (snapshot.hasError) {
                   return const ErrorPage();
+                } else if (snapshot.data == null ||
+                    snapshot.data!.docs.isEmpty) {
+                  return Container(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                    child: Center(
+                      child: Text(
+                        'No videos...',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  final videoMap = snapshot.data!.docs;
+                  final videos = videoMap.map((video) {
+                    return LongVideoModel.fromMap(video.data());
+                  }).toList();
+
+                  return ListView.builder(
+                    itemCount: videos.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                        ),
+                        child: Post(
+                          video: videos[index],
+                        ),
+                      );
+                    },
+                  );
                 }
-
-                final videoMap = snapshot.data!.docs;
-                final videos = videoMap.map((video) {
-                  return LongVideoModel.fromMap(video.data());
-                }).toList();
-
-                return ListView.builder(
-                  itemCount: videos.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                      ),
-                      child: Post(
-                        video: videos[index],
-                      ),
-                    );
-                  },
-                );
               },
             ),
           ),

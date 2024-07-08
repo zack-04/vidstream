@@ -44,6 +44,8 @@ class MyChannelVideoTabPage extends StatelessWidget {
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                 ),
                 Row(
                   children: [

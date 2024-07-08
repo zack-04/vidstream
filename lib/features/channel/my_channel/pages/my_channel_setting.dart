@@ -69,7 +69,7 @@ class _MyChannelSettingsState extends ConsumerState<MyChannelSettings> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: CachedNetworkImageProvider(
-                              currentUser.coverImageUrl.isNotEmpty
+                              currentUser!.coverImageUrl.isNotEmpty
                                   ? currentUser.coverImageUrl
                                   : DEFAULT_BANNER,
                             ), // Background image
@@ -225,7 +225,7 @@ class _MyChannelSettingsState extends ConsumerState<MyChannelSettings> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: Text(
-                          "Changes made on your names and profile pictures are visible only to youtube and not other Google Services",
+                          "Changes made on your names and profile pictures are visible only to vidstream.",
                           style: TextStyle(
                             color: Colors.blueGrey,
                           ),

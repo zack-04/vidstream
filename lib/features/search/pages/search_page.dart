@@ -73,7 +73,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                               ? Colors.white
                               : Colors.black,
                       decoration: InputDecoration(
-                        hintText: 'Search YouTube',
+                        hintText: 'Search Vidstream',
                         hintStyle: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,

@@ -63,7 +63,7 @@ class UserDataService {
           .collection('Users')
           .where(FieldPath.documentId, whereIn: subscribedUserIds)
           .get();
-      print(snapshot.docs);
+      
 
       return snapshot.docs.map((doc) => UserModel.fromDocument(doc)).toList();
     } catch (e) {

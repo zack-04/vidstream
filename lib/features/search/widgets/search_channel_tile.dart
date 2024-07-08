@@ -32,8 +32,8 @@ class _SearchChannelTileState extends ConsumerState<SearchChannelTile> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   decoration: BoxDecoration(
-                    border: Border.symmetric(
-                      horizontal: BorderSide(
+                    border: Border(
+                      bottom: BorderSide(
                         color: Colors.grey.shade700,
                         width: 0.5,
                       ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vidstream/features/theme/theme_provider.dart';
 import 'package:vidstream/firebase_options.dart';
-import 'package:vidstream/next_screen.dart';
+import 'package:vidstream/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +24,12 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Vidstream',
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
-      home: NextScreen(),
+      home: SplashScreen(),
     );
   }
 }

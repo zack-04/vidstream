@@ -1,13 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
 import 'package:vidstream/cores/screens/error_page.dart';
@@ -15,6 +14,7 @@ import 'package:vidstream/cores/screens/loader.dart';
 import 'package:vidstream/cores/widgets/flat_button.dart';
 import 'package:vidstream/features/auth/model/user_model.dart';
 import 'package:vidstream/features/auth/provider/user_provider.dart';
+import 'package:vidstream/features/channel/users_channel/pages/user_channel_page.dart';
 import 'package:vidstream/features/channel/users_channel/subscribe_repository.dart';
 import 'package:vidstream/features/contents/Long_video/parts/post.dart';
 import 'package:vidstream/features/contents/Long_video/widgets/video_extra_button.dart';
@@ -39,7 +39,6 @@ class Video extends ConsumerStatefulWidget {
 class _VideoState extends ConsumerState<Video> {
   bool isShowIcons = false;
   FlickManager? flickManager;
-  
 
   @override
   void initState() {
@@ -86,17 +85,24 @@ class _VideoState extends ConsumerState<Video> {
           children: [
             Stack(
               children: [
-                FlickVideoPlayer(flickManager: flickManager!),
+                AspectRatio(
+                  aspectRatio: 3 / 1.7,
+                  child: FlickVideoPlayer(
+                    flickManager: flickManager!,
+                    flickVideoWithControls: FlickVideoWithControls(
+                      videoFit: BoxFit.fitHeight,
+                      controls: FlickPortraitControls(),
+                    ),
+                  ),
+                ),
                 Positioned(
                   child: IconButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
+                    icon: FaIcon(
+                      FontAwesomeIcons.arrowLeft,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -158,67 +164,84 @@ class _VideoState extends ConsumerState<Video> {
                           height: 5,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircleAvatar(
-                              radius: 18,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: CachedNetworkImageProvider(
-                                user.value!.profilePic,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserChannelPage(
+                                        userId: user.value!.userId),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      user.value!.profilePic,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 10,
+                                      right: 5,
+                                    ),
+                                    child: Container(
+                                      constraints:
+                                          BoxConstraints(maxWidth: 180),
+                                      child: Text(
+                                        user.value!.displayName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 6, left: 6),
+                                    child: Text(
+                                      user.value!.subscribers.isEmpty
+                                          ? "0 "
+                                          : "${user.value!.subscribers.length}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 10,
-                                right: 5,
-                              ),
-                              child: Text(
-                                user.value!.displayName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 6, left: 6),
-                              child: Text(
-                                user.value!.subscribedChannels.isEmpty
-                                    ? "0 subscriber"
-                                    : "${user.value!.subscribedChannels.length} subscriber",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
                             SizedBox(
                               height: 40,
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 6),
-                                child:
-                                    Consumer(builder: (context, watch, _) {
+                                child: Consumer(builder: (context, watch, _) {
                                   final isSubscribed =
                                       user.value!.subscribers.contains(
                                     FirebaseAuth.instance.currentUser!.uid,
                                   );
-    
+
                                   return FlatButton(
                                     text: isSubscribed
                                         ? 'Subscribed'
                                         : 'Subscribe',
                                     onPressed: () async {
-                                      
                                       await ref
-                                          .read(subscribeChannelProvider
-                                              .notifier)
+                                          .read(
+                                              subscribeChannelProvider.notifier)
                                           .handleSubscription(
                                             userId: user.value!.userId,
                                             currentUserId: FirebaseAuth
                                                 .instance.currentUser!.uid,
                                             isSubscribed: isSubscribed,
                                           );
-                                      
                                     },
                                     color: Theme.of(context).brightness ==
                                             Brightness.dark
@@ -231,8 +254,8 @@ class _VideoState extends ConsumerState<Video> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 9, top: 15, right: 9),
+                          padding:
+                              const EdgeInsets.only(left: 9, top: 15, right: 9),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -246,7 +269,7 @@ class _VideoState extends ConsumerState<Video> {
                                       return Loader();
                                     }
                                     var videoData = snapshot.data!.data();
-    
+
                                     final likes = List<String>.from(
                                         videoData!['likes'] ?? []);
                                     return Container(
@@ -255,13 +278,12 @@ class _VideoState extends ConsumerState<Video> {
                                         vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? const Color.fromRGBO(
-                                                    255, 255, 255, 0.1)
-                                                : const Color.fromARGB(
-                                                    19, 63, 62, 62),
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? const Color.fromRGBO(
+                                                255, 255, 255, 0.1)
+                                            : const Color.fromARGB(
+                                                19, 63, 62, 62),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(25),
                                         ),
@@ -276,11 +298,11 @@ class _VideoState extends ConsumerState<Video> {
                                                       .currentUser!
                                                       .uid)
                                                   ? Icons.thumb_up
-                                                  : Icons
-                                                      .thumb_up_alt_outlined,
-                                              color: likes.contains(
-                                                      FirebaseAuth.instance
-                                                          .currentUser!.uid)
+                                                  : Icons.thumb_up_alt_outlined,
+                                              color: likes.contains(FirebaseAuth
+                                                      .instance
+                                                      .currentUser!
+                                                      .uid)
                                                   ? (Theme.of(context)
                                                               .brightness ==
                                                           Brightness.dark
@@ -317,11 +339,11 @@ class _VideoState extends ConsumerState<Video> {
                                           Icon(
                                             Icons.thumb_down,
                                             size: 15.5,
-                                            color: (Theme.of(context)
-                                                        .brightness ==
-                                                    Brightness.dark
-                                                ? Colors.white
-                                                : Colors.black),
+                                            color:
+                                                (Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.white
+                                                    : Colors.black),
                                           ),
                                         ],
                                       ),
@@ -329,8 +351,7 @@ class _VideoState extends ConsumerState<Video> {
                                   },
                                 ),
                                 const Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 9, right: 9),
+                                  padding: EdgeInsets.only(left: 9, right: 9),
                                   child: VideoExtraButton(
                                     text: "Share",
                                     iconData: Icons.share,
@@ -357,12 +378,11 @@ class _VideoState extends ConsumerState<Video> {
                       ],
                     ),
                   ),
-    
+
                   // comment Box
-    
+
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: GestureDetector(
                       onTap: () {
                         showModalBottomSheet(
@@ -397,20 +417,19 @@ class _VideoState extends ConsumerState<Video> {
                           horizontal: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: (Theme.of(context).brightness ==
-                                  Brightness.dark
-                              ? Colors.grey.shade800
-                              : Color.fromARGB(255, 230, 228, 228)),
+                          color:
+                              (Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.grey.shade800
+                                  : Color.fromARGB(255, 230, 228, 228)),
                           borderRadius: BorderRadius.all(
                             Radius.circular(8),
                           ),
                         ),
                         child: Consumer(
                           builder: (context, ref, child) {
-                            final AsyncValue<List<CommentModel>> comments =
-                                ref.watch(
-                                    commentsProvider(widget.video.videoId));
-    
+                            final AsyncValue<List<CommentModel>> comments = ref
+                                .watch(commentsProvider(widget.video.videoId));
+
                             return comments.when(
                               data: (commentsList) {
                                 if (commentsList.isEmpty) {
@@ -423,8 +442,7 @@ class _VideoState extends ConsumerState<Video> {
                                         "No comments...",
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: Theme.of(context)
-                                                      .brightness ==
+                                          color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? Colors.white
                                               : Colors.black,
@@ -433,7 +451,7 @@ class _VideoState extends ConsumerState<Video> {
                                     ),
                                   );
                                 }
-    
+
                                 return VideoFirstComment(
                                   comments: commentsList,
                                   user: user.value!,
@@ -450,18 +468,15 @@ class _VideoState extends ConsumerState<Video> {
                   StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("videos")
-                        .where("videoId",
-                            isNotEqualTo: widget.video.videoId)
+                        .where("videoId", isNotEqualTo: widget.video.videoId)
                         .snapshots(),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return Loader();
-                      } else if (!snapshot.hasData ||
-                          snapshot.data == null) {
+                      } else if (!snapshot.hasData || snapshot.data == null) {
                         return ErrorPage();
                       }
-    
+
                       final videosMap = snapshot.data!.docs;
                       final videos = videosMap
                           .map(

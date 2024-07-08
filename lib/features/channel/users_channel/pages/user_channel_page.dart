@@ -121,35 +121,28 @@ class _UserChannelPageState extends ConsumerState<UserChannelPage> {
                                               widget.userId))
                                           .when(
                                             data: (data) {
-                                              return data.length == 0
-                                                  ? const Text(
-                                                      'No videos',
-                                                      style: TextStyle(
-                                                        fontSize: 20,
+                                              if (data.length > 0) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 10,
+                                                    top: 10,
+                                                  ),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      '${user.displayName} videos',
+                                                      style: const TextStyle(
+                                                        fontSize: 23,
                                                         fontWeight:
                                                             FontWeight.w500,
                                                       ),
-                                                    )
-                                                  : Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        left: 10,
-                                                        top: 10,
-                                                      ),
-                                                      child: Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: Text(
-                                                          '${user.displayName} videos',
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 23,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              return SizedBox();
                                             },
                                             error: (error, stackTrace) =>
                                                 const ErrorPage(),
@@ -173,6 +166,21 @@ class _UserChannelPageState extends ConsumerState<UserChannelPage> {
                           .watch(eachChannelVideosProvider(widget.userId))
                           .when(
                             data: (videos) {
+                              if (videos.length == 0) {
+                                return Expanded(
+                                  child: Container(
+                                    child: Center(
+                                      child: const Text(
+                                        'No videos...',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
                               return Expanded(
                                 child: ListView.builder(
                                   itemCount: videos.length,

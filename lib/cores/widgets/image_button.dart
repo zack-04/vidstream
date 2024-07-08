@@ -30,7 +30,7 @@ class ImageButton extends StatelessWidget {
           child: Image.asset(
             "assets/icons/$image",
             color: Theme.of(context).iconTheme.color,
-            height: 23,
+            height: 20,
           ),
         ),
       ),
